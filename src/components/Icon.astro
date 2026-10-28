@@ -1,0 +1,21 @@
+---
+// Hugeicons Stroke Rounded (the shared 919 / ORDA / FloBerry pack). 24×24, stroke 1.5, currentColor.
+import icons from '../data/icons.json';
+
+type IconEntry = { s?: string; f?: string; w?: number };
+interface Props {
+  name: string;
+  size?: number;
+  weight?: number;
+  class?: string;
+  filled?: boolean;
+}
+const { name, size = 20, weight, class: className, filled = false } = Astro.props;
+const icon = (icons as Record<string, IconEntry>)[name];
+if (!icon) throw new Error(`Unknown icon: ${name}`);
+const sw = weight ?? icon.w ?? 1.5;
+---
+<svg class={className} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  {icon.s && <path d={icon.s} stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill={filled ? 'currentColor' : 'none'} />}
+  {icon.f && <path d={icon.f} fill="currentColor" />}
+</svg>

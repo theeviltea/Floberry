@@ -1,0 +1,237 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { img, packing, addons, related, contact } from '../../data/catalog';
+const oldOf = (p: number) => Math.round(p / 0.85 / 5) * 5;
+const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
+const photos = [img.red51Large, img.red51, img.red201];
+---
+<Layout title="Bouquet of 51 Red Roses — FloBerry Boutique">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><a href="/collections/red-roses/">Red roses</a><span>/</span><span>Bouquet of 51 Red Roses</span></nav>
+
+    <div class="pdp">
+      <div class="gallery">
+        <div class="thumbs">
+          {photos.map((p, i) => <button class:list={['thumb', { on: i === 0 }]} data-src={p} aria-label={`Photo ${i + 1}`}><img src={p} alt="" width="80" height="80" /></button>)}
+          <button class="thumb vid" aria-label="Video"><img src={img.red201} alt="" width="80" height="80" /><span><Icon name="play" size={18} /></span></button>
+        </div>
+        <div class="main-img">
+          <img id="main-img" src={photos[0]} alt="Bouquet of 51 Red Roses" width="540" height="540" />
+          <span class="badge glass-dark sale-b">Sale −15%</span>
+          <span class="zoom glass only-desktop"><Icon name="zoom-in-area" size={16} />Click to zoom</span>
+          <div class="dots only-mobile">{[0, 1, 2, 3].map((i) => <span class:list={{ on: i === 0 }}></span>)}</div>
+        </div>
+      </div>
+
+      <div class="buy">
+        <div class="badges"><span class="badge badge-gold">Best seller</span><span class="badge badge-outline-sage"><Icon name="fast-wind" size={13} />Turbo available</span></div>
+        <h1 class="h2">Bouquet of 51 Red Roses</h1>
+        <div class="price"><span id="price">{fmt(packing[0].price)}</span><s id="old">{fmt(oldOf(packing[0].price))}</s><span class="badge badge-new">−15%</span></div>
+        <p class="muted desc">51 premium red roses, hand-tied by our florists. Choose the packing that suits the moment.</p>
+
+        <fieldset class="group">
+          <legend class="label-caps">Packing · <span id="pack-name">{packing[0].label}</span></legend>
+          <div class="pack">
+            {packing.map((p, i) => (
+              <button class="opt pk" aria-pressed={i === 0 ? 'true' : 'false'} data-price={p.price} data-label={p.label}>
+                <span class="pk-name">{p.label}</span><span class="pk-price">{fmt(p.price)}</span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="label-caps">Make it extra special</legend>
+          <div class="addons">
+            {addons.map((a) => (
+              <button class="opt ad" aria-pressed="false" data-price={a.price}>
+                <span class="ad-ic"><Icon name={a.icon} size={22} /></span>
+                <span class="ad-txt"><span>{a.label}</span><span class="muted">+ {fmt(a.price)}</span></span>
+                <span class="ad-check"><Icon name="tick-02" size={14} weight={2} /></span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="label-caps">Message card <span class="muted opt-l">· free</span></legend>
+          <div class="msg field">
+            <textarea id="msg" maxlength="200" rows="3" placeholder="Write your message — we'll handwrite it on a card"></textarea>
+            <span class="counter"><span id="msg-n">0</span>/200</span>
+          </div>
+          <label class="anon"><input type="checkbox" /> Send anonymously</label>
+        </fieldset>
+
+        <div class="delivery">
+          <span class="label-caps">Delivery</span>
+          <div class="days">
+            <button class="opt day" aria-pressed="true"><span>Today</span><small>Oct 28</small></button>
+            <button class="opt day" aria-pressed="false"><span>Tomorrow</span><small>Oct 29</small></button>
+            <button class="opt day" aria-pressed="false"><Icon name="calendar-03" size={18} /><small>Pick a date</small></button>
+          </div>
+          <label class="slot field"><Icon name="clock-01" size={18} />
+            <select aria-label="Time slot"><option>14:00 – 16:00</option><option>16:00 – 18:00</option><option>18:00 – 20:00</option><option>20:00 – 22:00</option></select>
+          </label>
+          <label class="turbo">
+            <span class="t-ic"><Icon name="fast-wind" size={20} /></span>
+            <span class="t-txt"><strong>Turbo Delivery · 40–80 min</strong><span class="muted">+ [Turbo fee]</span></span>
+            <input type="checkbox" id="turbo" class="switch" />
+          </label>
+          <p class="free"><Icon name="delivery-truck-01" size={16} />Free delivery on this order</p>
+        </div>
+
+        <div class="atc-row">
+          <div class="stepper"><button aria-label="Decrease" data-q="-1"><Icon name="minus-sign" size={18} /></button><output id="qty">1</output><button aria-label="Increase" data-q="1"><Icon name="add-01" size={18} /></button></div>
+          <button class="btn btn-primary btn-xl atc">Add to cart · <span class="total">{fmt(packing[0].price)}</span></button>
+        </div>
+        <a class="btn btn-whatsapp-outline btn-block btn-xl" href={contact.whatsapp}><Icon name="whatsapp" size={18} />Order via WhatsApp</a>
+
+        <div class="acc">
+          <details open><summary>Description<Icon name="arrow-down-01" size={18} class="chev" /></summary><p>51 fresh red roses (Ecuador, 50–60 cm), hand-tied in the packing of your choice. Bouquet diameter around 45 cm. Each stem is inspected by our florists before delivery.</p></details>
+          <details><summary>Delivery &amp; payment<Icon name="arrow-down-01" size={18} class="chev" /></summary><p>Same-day delivery across Dubai, Turbo Delivery in 40–80 minutes. Free delivery over AED 400. [Payment methods to confirm].</p></details>
+          <details><summary>Flower care<Icon name="arrow-down-01" size={18} class="chev" /></summary><p>Trim stems at an angle, change the water every day and keep the bouquet away from direct sunlight and air conditioning.</p></details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section inset related">
+    <div class="container">
+      <div class="section-head"><div class="titles"><span class="eyebrow">You may also like</span><h2 class="h2">More red roses</h2></div></div>
+      <div class="product-grid">{related.map((p) => <ProductCard {...p} />)}</div>
+    </div>
+  </section>
+
+  <div class="sticky-atc glass only-mobile">
+    <div><span class="s-name">51 Red Roses · <span id="s-pack">{packing[0].label}</span></span><strong class="total">{fmt(packing[0].price)}</strong></div>
+    <button class="btn btn-primary">Add to cart</button>
+  </div>
+</Layout>
+
+<script>
+  const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  let base = 595, qty = 1;
+  const update = () => {
+    const extra = [...document.querySelectorAll<HTMLElement>('.ad[aria-pressed="true"]')].reduce((s, a) => s + Number(a.dataset.price), 0);
+    document.querySelectorAll('.total').forEach((t) => (t.textContent = fmt((base + extra) * qty)));
+  };
+  document.querySelectorAll<HTMLElement>('.pk').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.pk').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    base = Number(b.dataset.price);
+    $('#price').textContent = fmt(base);
+    $('#old').textContent = fmt(Math.round(base / 0.85 / 5) * 5);
+    $('#pack-name').textContent = $('#s-pack').textContent = b.dataset.label!;
+    update();
+  }));
+  document.querySelectorAll('.ad').forEach((b) => b.addEventListener('click', () => {
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); update();
+  }));
+  document.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () =>
+    document.querySelectorAll('.day').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))));
+  document.querySelectorAll<HTMLElement>('[data-q]').forEach((b) => b.addEventListener('click', () => {
+    qty = Math.max(1, Math.min(20, qty + Number(b.dataset.q))); $('#qty').textContent = String(qty); update();
+  }));
+  const msg = $<HTMLTextAreaElement>('#msg');
+  msg.addEventListener('input', () => ($('#msg-n').textContent = String(msg.value.length)));
+  document.querySelectorAll<HTMLElement>('.thumb[data-src]').forEach((t) => t.addEventListener('click', () => {
+    document.querySelectorAll('.thumb').forEach((x) => x.classList.toggle('on', x === t));
+    $<HTMLImageElement>('#main-img').src = t.dataset.src!;
+  }));
+</script>
+
+<style>
+  .crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--ink-muted); padding: 20px 0 24px; }
+  .crumbs a { color: var(--ink-muted); text-decoration: none; }
+  .pdp { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 64px; align-items: start; padding-bottom: 88px; }
+  .gallery { position: sticky; top: 170px; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 16px; }
+  .thumbs { display: flex; flex-direction: column; gap: 12px; }
+  .thumb { position: relative; padding: 0; border: 0; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 1; background: var(--cream); opacity: .7; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb.on { opacity: 1; box-shadow: 0 0 0 2px var(--coal); }
+  .vid span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(26, 26, 26, .3); }
+  .main-img { position: relative; aspect-ratio: 1; border-radius: var(--radius-lg); overflow: hidden; background: var(--cream); }
+  .main-img img { width: 100%; height: 100%; object-fit: cover; }
+  .sale-b { position: absolute; top: 18px; left: 18px; }
+  .zoom { position: absolute; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; }
+
+  .buy { display: flex; flex-direction: column; gap: 22px; }
+  .badges { display: flex; gap: 8px; }
+  .badges .badge { display: inline-flex; align-items: center; gap: 5px; }
+  .price { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 600; color: var(--gold-text); }
+  .price s { font-size: 18px; font-weight: 400; color: var(--ink-muted); }
+  .desc { margin-top: -8px; line-height: 1.6; }
+  .group { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .group legend { margin-bottom: 12px; padding: 0; }
+  .opt-l { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .pack { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .pk { display: flex; flex-direction: column; gap: 4px; padding: 14px 10px; text-align: center; }
+  .pk-name { font-weight: 600; font-size: 15px; }
+  .pk-price { font-size: 13px; color: var(--ink-muted); }
+  .addons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ad { display: flex; align-items: center; gap: 12px; padding: 12px 14px; text-align: left; }
+  .ad-ic { width: 40px; height: 40px; flex: none; border-radius: 50%; background: var(--cream); color: var(--gold-text); display: flex; align-items: center; justify-content: center; }
+  .ad-txt { display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 500; flex: 1; }
+  .ad-txt .muted { font-size: 13px; font-weight: 400; }
+  .ad-check { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--control-border); display: flex; align-items: center; justify-content: center; color: transparent; flex: none; }
+  .ad[aria-pressed="true"] .ad-check { background: var(--coal); color: #fff; box-shadow: none; }
+  .msg { position: relative; padding: 0; }
+  .msg textarea { display: block; width: 100%; border: 0; outline: 0; resize: vertical; padding: 14px 16px 28px; font: inherit; font-size: 15px; background: transparent; color: var(--coal); border-radius: inherit; }
+  .counter { position: absolute; right: 14px; bottom: 10px; font-size: 12px; color: var(--ink-muted); }
+  .anon { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .anon input { width: 18px; height: 18px; accent-color: var(--coal); margin: 0; }
+
+  .delivery { background: var(--cream); border-radius: var(--radius-xl); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+  .days { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .day { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; font-weight: 600; font-size: 14px; }
+  .day small { font-weight: 400; color: var(--ink-muted); font-size: 12px; }
+  .slot { display: flex; align-items: center; gap: 10px; padding: 0 14px; height: 48px; color: var(--ink-muted); }
+  .slot select { flex: 1; height: 100%; border: 0; outline: 0; background: transparent; font: inherit; font-size: 15px; color: var(--coal); }
+  .turbo { display: flex; align-items: center; gap: 12px; background: var(--surface); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; }
+  .t-ic { width: 38px; height: 38px; border-radius: 50%; background: var(--sage-moss); color: #fff; display: flex; align-items: center; justify-content: center; flex: none; }
+  .t-txt { display: flex; flex-direction: column; gap: 2px; flex: 1; font-size: 14px; }
+  .t-txt .muted { font-size: 13px; }
+  .switch { appearance: none; width: 44px; height: 26px; border-radius: 13px; background: var(--control-border); position: relative; margin: 0; cursor: pointer; transition: background .2s; flex: none; }
+  .switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+  .switch:checked { background: var(--sage-strong); }
+  .switch:checked::after { transform: translateX(18px); }
+  .free { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--sage-strong); margin: 0; }
+
+  .atc-row { display: flex; gap: 12px; }
+  .atc { flex: 1; }
+  .acc details { border-top: 1px solid var(--line); padding: 18px 0; }
+  .acc details:last-child { border-bottom: 1px solid var(--line); }
+  .acc summary { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+  .acc p { margin: 14px 0 0; font-size: 15px; line-height: 1.7; color: var(--ink-secondary); }
+  .related { background: var(--cream); }
+
+  @media (max-width: 1100px) {
+    .pdp { grid-template-columns: 1fr; gap: 40px; }
+    .gallery { position: static; }
+  }
+  @media (max-width: 760px) {
+    .crumbs { padding: 12px 0 14px; font-size: 12px; }
+    .pdp { gap: 24px; padding-bottom: 56px; }
+    .gallery { grid-template-columns: 1fr; margin: 0 -12px; }
+    .thumbs { display: none; }
+    .main-img { border-radius: 24px; }
+    .dots { display: flex !important; position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); gap: 6px; }
+    .dots span { width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.6); }
+    .dots span.on { width: 18px; background: #fff; }
+    .buy { gap: 18px; }
+    .price { font-size: 22px; }
+    .pack { grid-template-columns: 1fr 1fr; }
+    .addons { grid-template-columns: 1fr; }
+    .delivery { padding: 16px; border-radius: 20px; }
+    .atc-row .stepper { height: 56px; }
+    .atc { font-size: 12px; padding: 0 14px; }
+    :global(body) { padding-bottom: 76px; }
+    .sticky-atc { display: flex !important; position: fixed; left: 8px; right: 8px; bottom: 10px; z-index: 40; padding: 8px 8px 8px 20px; border-radius: var(--radius-pill); align-items: center; justify-content: space-between; gap: 12px; }
+    .sticky-atc > div { display: flex; flex-direction: column; min-width: 0; }
+    .s-name { font-size: 12px; color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sticky-atc strong { font-size: 16px; }
+    .sticky-atc .btn { height: 48px; padding: 0 22px; }
+  }
+</style>

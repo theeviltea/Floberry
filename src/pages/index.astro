@@ -1,0 +1,318 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { signature, roses, img, contact, COLLECTION_URL } from '../data/catalog';
+
+const trust = [
+  { icon: 'fast-wind', text: 'Turbo Delivery 40–80 min' },
+  { icon: 'delivery-truck-01', text: 'Free delivery over AED 400' },
+  { icon: 'leaf-01', text: 'Fresh flowers every day' },
+  { icon: 'store-01', text: 'Boutique on Bluewaters Island' },
+];
+const cats = [
+  { label: 'Red roses', img: img.red201 },
+  { label: 'Pink roses', img: img.pink201 },
+  { label: 'Baskets', img: img.white101 },
+  { label: 'Bouquets', img: img.red51 },
+  { label: 'Signature', img: img.orange555 },
+];
+const perks = [
+  { icon: 'fast-wind', title: 'Turbo Delivery', text: 'Your bouquet across Dubai in 40–80 minutes.' },
+  { icon: 'delivery-truck-01', title: 'Free delivery over AED 400', text: 'Same-day delivery on orders placed before [cut-off time].' },
+  { icon: 'security-check', title: 'Secure payment', text: '[Payment methods to confirm]' },
+  { icon: 'leaf-01', title: 'Fresh every day', text: 'Flowers arrive at the boutique every morning.' },
+];
+---
+<Layout title="FloBerry Boutique — Fresh flowers delivered in Dubai">
+  <!-- Hero: original split layout -->
+  <section class="hero">
+    <div class="hero-text pat-dark">
+      <div class="hero-in">
+        <span class="eyebrow on-dark">Flower boutique · Bluewaters, Dubai</span>
+        <h1 class="display-xl">Only fresh flowers.<br />Every day.</h1>
+        <p class="lead">Handcrafted bouquets and arrangements, delivered across Dubai — with Turbo Delivery in 40–80 minutes.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-gold btn-xl" href={COLLECTION_URL}>Shop bouquets</a>
+          <a class="btn btn-outline-light btn-xl" href={contact.whatsapp}><Icon name="whatsapp" size={18} />Order on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src={img.red51Large} alt="Bouquet of red roses" width="540" height="540" />
+      <span class="video-chip glass-dark"><Icon name="play" size={14} />Background video · loops muted</span>
+    </div>
+  </section>
+
+  <div class="container trust">
+    {trust.map((t) => <span class="glass trust-pill"><Icon name={t.icon} size={18} />{t.text}</span>)}
+  </div>
+
+  <!-- Collection list -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Shop by collection</span>
+        <h2 class="h2">Find the perfect bouquet</h2>
+      </div>
+      <div class="arches">
+        {cats.map((c) => (
+          <a class="arch" href={COLLECTION_URL}>
+            <span class="arch-img"><img src={c.img} alt="" width="280" height="280" loading="lazy" /></span>
+            <span class="arch-label">{c.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured -->
+  <section class="section inset featured">
+    <div class="container">
+      <div class="section-head">
+        <div class="titles"><span class="eyebrow">Signature by FloBerry</span><h2 class="h2">Our most loved arrangements</h2></div>
+        <div class="tabs" role="tablist">
+          <button class="chip is-active" role="tab" aria-selected="true">Bestsellers</button>
+          <button class="chip" role="tab">New in</button>
+          <button class="chip" role="tab">Under AED 500</button>
+        </div>
+      </div>
+      <div class="product-grid">{signature.map((p) => <ProductCard {...p} />)}</div>
+      <div class="more"><a class="btn btn-secondary" href={COLLECTION_URL}>View full collection</a></div>
+    </div>
+  </section>
+
+  <!-- Promo banners -->
+  <section class="section">
+    <div class="container promos">
+      <article class="promo pat-dark">
+        <div class="promo-text">
+          <span class="eyebrow on-dark">February 14</span>
+          <h3 class="h3">Valentine's Day</h3>
+          <p>Pre-order now and choose your delivery slot.</p>
+          <a class="btn btn-gold" href={COLLECTION_URL}>Shop Valentine's</a>
+        </div>
+        <img src={img.red201} alt="" width="280" height="280" loading="lazy" />
+      </article>
+      <article class="promo promo-light">
+        <div class="promo-text">
+          <span class="eyebrow">Flower baskets</span>
+          <h3 class="h3">Baskets that make a statement</h3>
+          <p>From 101 to 555 roses, arranged by hand.</p>
+          <a class="btn btn-primary" href={COLLECTION_URL}>Shop baskets</a>
+        </div>
+        <img src={img.orange555} alt="" width="280" height="280" loading="lazy" />
+      </article>
+    </div>
+  </section>
+
+  <!-- Carousel -->
+  <section class="section carousel" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <div class="titles"><span class="eyebrow">Roses collection</span><h2 class="h2">Say it with roses</h2></div>
+        <div class="arrows only-desktop">
+          <button class="icon-btn" aria-label="Previous" data-scroll="-1"><Icon name="arrow-left-01" size={20} /></button>
+          <button class="icon-btn" aria-label="Next" data-scroll="1"><Icon name="arrow-right-01" size={20} /></button>
+        </div>
+      </div>
+      <div class="scroll-row track">{[...roses, ...signature].map((p) => <div class="slide"><ProductCard {...p} /></div>)}</div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section inset about">
+    <div class="container about-grid">
+      <div class="about-media">
+        <img class="a1" src={img.pink201} alt="Pink roses bouquet" width="280" height="280" loading="lazy" />
+        <img class="a2" src={img.white101} alt="White rose basket" width="280" height="280" loading="lazy" />
+      </div>
+      <div class="about-text">
+        <img src="/img/brand/pictogram-gold.svg" alt="" width="48" height="48" />
+        <span class="eyebrow">About FloBerry</span>
+        <h2 class="h2">A boutique on Bluewaters Island</h2>
+        <p class="lead">We create bouquets from flowers delivered fresh every day. Visit us on Bluewaters or order online — our florists will hand-pick every stem.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="/pages/delivery/">Our story</a>
+          <a class="btn btn-secondary" href="#map">Visit the boutique</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Perks -->
+  <section class="section">
+    <div class="container perks">
+      {perks.map((p) => (
+        <div class="perk"><span class="perk-ic"><Icon name={p.icon} size={24} /></span><h3 class="h4">{p.title}</h3><p class="muted">{p.text}</p></div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section class="inset map" id="map">
+    <div class="map-bg" aria-hidden="true">
+      <span class="water"></span><span class="road r1"></span><span class="road r2"></span><span class="road r3"></span><span class="island"></span>
+      <span class="pin"><img src="/img/brand/pictogram-white.svg" alt="" width="26" height="26" /></span>
+    </div>
+    <div class="container map-in">
+      <div class="store glass">
+        <span class="eyebrow">Visit the boutique</span>
+        <h2 class="h3">FloBerry on Bluewaters</h2>
+        <ul>
+          <li><Icon name="location-01" size={18} />{contact.address}</li>
+          <li><Icon name="clock-01" size={18} />[Opening hours]</li>
+          <li><Icon name="call" size={18} /><a href={contact.tel}>{contact.phone}</a></li>
+        </ul>
+        <div class="store-ctas">
+          <a class="btn btn-primary btn-sm" href="https://maps.google.com/?q=FloBerry+Bluewaters+Dubai"><Icon name="route-01" size={16} />Get directions</a>
+          <a class="btn btn-whatsapp-outline btn-sm" href={contact.whatsapp}><Icon name="whatsapp" size={16} />WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="inset cta pat-dark">
+    <div class="container cta-in">
+      <h2 class="h2">Need something special?</h2>
+      <p class="lead">Message our florists on WhatsApp or give us a call — we're happy to help.</p>
+      <div class="hero-ctas center">
+        <a class="btn btn-whatsapp btn-xl" href={contact.whatsapp}><Icon name="whatsapp" size={18} />Chat on WhatsApp</a>
+        <a class="btn btn-outline-light btn-xl" href={contact.tel}><Icon name="call" size={18} />Call {contact.phone}</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-scroll]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const track = b.closest('section')!.querySelector<HTMLElement>('.track')!;
+      track.scrollBy({ left: Number(b.dataset.scroll) * track.clientWidth * 0.8, behavior: 'smooth' });
+    }),
+  );
+  document.querySelectorAll('.tabs').forEach((tabs) =>
+    tabs.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest('.chip');
+      if (!t) return;
+      tabs.querySelectorAll('.chip').forEach((c) => { c.classList.toggle('is-active', c === t); c.setAttribute('aria-selected', String(c === t)); });
+    }),
+  );
+</script>
+
+<style>
+  .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; }
+  .hero-text { color: var(--on-dark); display: flex; align-items: center; }
+  .hero-in { padding: 72px max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); padding-right: 64px; display: flex; flex-direction: column; gap: 24px; max-width: 720px; margin-left: auto; width: 100%; }
+  .hero-in .lead { color: var(--on-dark-muted); max-width: 460px; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .hero-ctas.center { justify-content: center; }
+  .hero-media { position: relative; overflow: hidden; background: var(--cream); }
+  .hero-media img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .video-chip { position: absolute; left: 24px; bottom: 24px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--radius-pill); color: var(--on-dark); font-size: 12px; font-weight: 500; }
+
+  .trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: -28px; position: relative; z-index: 2; }
+  .trust-pill { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 500; color: var(--coal); }
+  .trust-pill :global(svg) { color: var(--sage-strong); }
+
+  .arches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+  .arch { display: flex; flex-direction: column; align-items: center; gap: 16px; text-decoration: none; }
+  .arch-img { width: 100%; aspect-ratio: 3 / 4; border-radius: 999px 999px 20px 20px; overflow: hidden; background: var(--cream); }
+  .arch-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+  .arch:hover img { transform: scale(1.04); }
+  .arch-label { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+
+  .featured { background: var(--cream); }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .more { display: flex; justify-content: center; margin-top: 44px; }
+
+  .promos { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .promo { display: grid; grid-template-columns: 1.1fr 1fr; border-radius: var(--radius-lg); overflow: hidden; min-height: 320px; }
+  .promo img { width: 100%; height: 100%; object-fit: cover; }
+  .promo-text { padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 14px; }
+  .pat-dark.promo { color: var(--on-dark); }
+  .pat-dark.promo p { color: var(--on-dark-muted); }
+  .promo-light { background: var(--light-pale-gold); }
+  .promo-light p { color: var(--ink-secondary); }
+
+  .arrows { display: flex; gap: 8px; }
+  .track { gap: 24px; scroll-snap-type: x mandatory; }
+  .slide { flex: 0 0 calc((100% - 72px) / 4); scroll-snap-align: start; }
+
+  .about { background: var(--cream); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-media { position: relative; height: 520px; }
+  .about-media img { position: absolute; object-fit: cover; }
+  .a1 { left: 0; top: 0; width: 62%; height: 88%; border-radius: 999px 999px 20px 20px; }
+  .a2 { right: 0; bottom: 0; width: 46%; height: 52%; border-radius: var(--radius-lg); border: 6px solid var(--cream); }
+  .about-text { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+  .about-text .lead { color: var(--ink-secondary); }
+
+  .perks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .perk { background: var(--cream); border-radius: var(--radius-xl); padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .perk-ic { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--sage-strong); display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+  .perk p { font-size: 14px; line-height: 1.6; }
+
+  .map { position: relative; min-height: 480px; background: #EFE9E1; display: flex; align-items: center; }
+  .map-bg { position: absolute; inset: 0; overflow: hidden; }
+  .water { position: absolute; left: 38%; top: -10%; width: 80%; height: 130%; background: var(--map-water); border-radius: 46% 0 0 52%; }
+  .road { position: absolute; background: #fff; border-radius: 4px; }
+  .r1 { left: 0; right: 0; top: 64%; height: 10px; transform: rotate(-6deg); }
+  .r2 { left: 30%; top: 0; bottom: 0; width: 8px; transform: rotate(12deg); }
+  .r3 { left: 50%; right: 0; top: 46%; height: 6px; transform: rotate(-18deg); }
+  .island { position: absolute; left: 66%; top: 32%; width: 160px; height: 120px; background: #EFE9E1; border-radius: 50%; }
+  .pin { position: absolute; left: calc(66% + 56px); top: calc(32% + 26px); width: 52px; height: 52px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--coal); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(34,34,34,.25); }
+  .pin img { transform: rotate(45deg); }
+  .map-in { position: relative; width: 100%; }
+  .store { max-width: 400px; padding: 32px; border-radius: var(--radius-xl); display: flex; flex-direction: column; gap: 14px; }
+  .store ul { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--ink-secondary); }
+  .store li { display: flex; gap: 10px; align-items: flex-start; }
+  .store li :global(svg) { flex: none; color: var(--gold-text); margin-top: 1px; }
+  .store-ctas { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .cta { color: var(--on-dark); margin-top: 16px; }
+  .cta-in { padding-top: 88px; padding-bottom: 88px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; }
+  .cta-in .lead { color: var(--on-dark-muted); max-width: 520px; }
+
+  @media (max-width: 1100px) {
+    .arches { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .promos { grid-template-columns: 1fr; }
+    .perks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slide { flex-basis: calc((100% - 48px) / 3); }
+  }
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; }
+    .hero-media { order: -1; height: 420px; }
+    .hero-in { padding: 36px 20px 64px; gap: 18px; }
+    .hero-ctas .btn { flex: 1 1 100%; }
+    .video-chip { left: 12px; bottom: 12px; font-size: 11px; }
+    .trust { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; margin-top: -24px; padding-bottom: 4px; }
+    .trust::-webkit-scrollbar { display: none; }
+    .trust-pill { flex: none; padding: 11px 16px; font-size: 13px; }
+    .arches { display: flex; overflow-x: auto; gap: 12px; margin: 0 -20px; padding: 0 20px; scrollbar-width: none; }
+    .arches::-webkit-scrollbar { display: none; }
+    .arch { flex: 0 0 120px; gap: 10px; }
+    .arch-label { font-size: 11px; }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .more .btn { width: 100%; }
+    .promo { grid-template-columns: 1fr; border-radius: 20px; min-height: 0; }
+    .promo img { height: 200px; order: -1; }
+    .promo-text { padding: 24px; }
+    .track { gap: 12px; }
+    .slide { flex-basis: 64%; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .about-media { height: 340px; }
+    .perks { grid-template-columns: 1fr; gap: 10px; }
+    .perk { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 18px; column-gap: 14px; row-gap: 4px; border-radius: 20px; }
+    .perk-ic { margin: 0; }
+    .perk h3 { flex: 1; font-size: 18px; }
+    .perk p { flex-basis: 100%; padding-left: 62px; }
+    .map { min-height: 0; flex-direction: column; align-items: stretch; }
+    .map-bg { position: relative; height: 240px; }
+    .map-in { padding: 0 12px 12px; margin-top: -40px; }
+    .store { max-width: none; padding: 22px; border-radius: 20px; }
+    .cta-in { padding-top: 56px; padding-bottom: 56px; }
+    .cta-in .btn { width: 100%; }
+  }
+</style>

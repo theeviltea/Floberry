@@ -1,0 +1,206 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { redRoses } from '../../data/catalog';
+const first = redRoses.slice(0, 5);
+const rest = [...redRoses.slice(5), redRoses[1]];
+const colours = [
+  { name: 'Red', c: '#9E1B2A' }, { name: 'Pink', c: '#E7A1B0' }, { name: 'White', c: '#F6F1EA' },
+  { name: 'Peach', c: '#F2B48C' }, { name: 'Mixed', c: 'conic-gradient(#9E1B2A 0 33%, #E7A1B0 0 66%, #F6F1EA 0)' },
+];
+---
+<Layout title="Red Roses — FloBerry Boutique">
+  <section class="inset banner">
+    <div class="container banner-in">
+      <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><a href="#">Roses</a><span>/</span><span>Red roses</span></nav>
+      <h1 class="h1">Red Roses</h1>
+      <p class="lead">Classic red roses for every occasion — from an elegant 15-stem bouquet to a 555-rose statement basket.</p>
+      <div class="subcats">
+        <a class="chip is-active" href="#">All</a><a class="chip" href="#">15–51 roses</a><a class="chip" href="#">101+ roses</a><a class="chip" href="#">Baskets</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="toolbar glass">
+      <button class="tool-btn" id="toggle-filters"><Icon name="filter-horizontal" size={18} /><span class="only-desktop">Hide filters</span><span class="only-mobile">Filters · 2</span></button>
+      <div class="active only-desktop">
+        <span class="chip chip-filter">Ribbon <Icon name="cancel-01" size={14} /></span>
+        <span class="chip chip-filter">51 roses <Icon name="cancel-01" size={14} /></span>
+        <button class="link-caps clear">Clear all</button>
+      </div>
+      <span class="count only-desktop">24 products</span>
+      <label class="sort"><Icon name="sort-by-down-02" size={18} class="only-mobile" />
+        <span class="only-desktop">Sort by</span>
+        <select aria-label="Sort"><option>Featured</option><option>Price, low to high</option><option>Price, high to low</option><option>Newest</option></select>
+      </label>
+    </div>
+
+    <div class="layout" id="layout">
+      <dialog class="filters" id="filters" aria-label="Filters">
+        <div class="f-head only-mobile">
+          <span class="h4">Filters</span>
+          <button class="icon-btn" aria-label="Close" data-close><Icon name="cancel-01" size={20} /></button>
+        </div>
+        <div class="f-body">
+          <details open class="f-group">
+            <summary>Price<Icon name="arrow-down-01" size={16} class="chev" /></summary>
+            <div class="range"><span class="track"><span class="fill"></span><span class="knob k1"></span><span class="knob k2"></span></span></div>
+            <div class="price-in"><label class="field">AED <input value="345" inputmode="numeric" /></label><span>—</span><label class="field">AED <input value="6,590" inputmode="numeric" /></label></div>
+          </details>
+          <details open class="f-group">
+            <summary>Packing<Icon name="arrow-down-01" size={16} class="chev" /></summary>
+            {['Air', 'Ribbon', 'Jacket', 'Sand Clock', 'Basket'].map((p, i) => (
+              <label class="check"><input type="checkbox" checked={i === 1} /><span>{p}</span><span class="muted n">{[8, 6, 5, 3, 2][i]}</span></label>
+            ))}
+          </details>
+          <details open class="f-group">
+            <summary>Number of roses<Icon name="arrow-down-01" size={16} class="chev" /></summary>
+            <div class="chips">{['15', '25', '51', '101', '201', '555'].map((n) => <button class:list={['chip', { 'is-active': n === '51' }]}>{n}</button>)}</div>
+          </details>
+          <details open class="f-group">
+            <summary>Colour<Icon name="arrow-down-01" size={16} class="chev" /></summary>
+            <div class="swatches">{colours.map((c, i) => <button class:list={['sw', { on: i === 0 }]} aria-label={c.name} title={c.name}><span style={`background:${c.c}`}></span></button>)}</div>
+          </details>
+          <details open class="f-group">
+            <summary>Availability<Icon name="arrow-down-01" size={16} class="chev" /></summary>
+            <label class="check"><input type="checkbox" checked /><span>In stock</span></label>
+            <label class="check"><input type="checkbox" /><span>Turbo Delivery available</span></label>
+          </details>
+        </div>
+        <div class="f-foot only-mobile">
+          <button class="btn btn-secondary" data-close>Clear all</button>
+          <button class="btn btn-primary" data-close>Show 24 products</button>
+        </div>
+      </dialog>
+
+      <div class="results">
+        <div class="product-grid">
+          {first.map((p) => <ProductCard {...p} />)}
+          <a class="promo-tile pat-dark" href="#">
+            <Icon name="fast-wind" size={32} />
+            <span class="h3">Turbo Delivery</span>
+            <span>Across Dubai in 40–80 minutes</span>
+            <span class="btn btn-gold btn-sm">Learn more</span>
+          </a>
+          {rest.map((p) => <ProductCard {...p} />)}
+        </div>
+        <div class="paging">
+          <span class="muted">Showing 9 of 24</span>
+          <span class="bar"><span style="width:37.5%"></span></span>
+          <button class="btn btn-secondary">Load more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section seo">
+    <div class="container seo-in">
+      <h2 class="h3">Red roses delivery in Dubai</h2>
+      <p class="muted">A bouquet of red roses is the timeless way to say “I love you”. At FloBerry we hand-pick every stem in our Bluewaters boutique and deliver across Dubai the same day — or within 40–80 minutes with Turbo Delivery. Choose the number of roses, the packing and add a balloon, chocolates or a handwritten card.</p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const dlg = document.getElementById('filters') as HTMLDialogElement;
+  const layout = document.getElementById('layout')!;
+  const mq = window.matchMedia('(max-width: 760px)');
+  const toggle = document.getElementById('toggle-filters')!;
+  const label = toggle.querySelector('.only-desktop')!;
+  toggle.addEventListener('click', () => {
+    if (mq.matches) dlg.showModal();
+    else { const hidden = layout.classList.toggle('no-filters'); label.textContent = hidden ? 'Show filters' : 'Hide filters'; }
+  });
+  dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  document.querySelectorAll('.chips, .subcats').forEach((g) => g.addEventListener('click', (e) => {
+    const c = (e.target as HTMLElement).closest('.chip'); if (!c) return; e.preventDefault();
+    if (g.classList.contains('subcats')) g.querySelectorAll('.chip').forEach((x) => x.classList.toggle('is-active', x === c));
+    else c.classList.toggle('is-active');
+  }));
+  document.querySelectorAll('.sw').forEach((s) => s.addEventListener('click', () => s.classList.toggle('on')));
+</script>
+
+<style>
+  .banner { background: var(--cream); }
+  .banner-in { padding-top: 48px; padding-bottom: 48px; display: flex; flex-direction: column; gap: 16px; }
+  .banner .lead { color: var(--ink-secondary); max-width: 620px; }
+  .crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--ink-muted); }
+  .crumbs a { color: var(--ink-muted); text-decoration: none; }
+  .subcats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .subcats .chip { background: var(--surface); text-decoration: none; }
+  .subcats .chip.is-active { background: var(--coal); }
+
+  .toolbar { position: sticky; top: 156px; z-index: 10; margin: 24px 0 32px; display: flex; align-items: center; gap: 20px; padding: 8px 8px 8px 12px; border-radius: var(--radius-pill); }
+  .tool-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: var(--radius-pill); background: var(--surface); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coal); }
+  .active { align-items: center; gap: 8px; flex: 1; }
+  @media (min-width: 761px) { .active { display: flex; } }
+  .clear { border: 0; background: none; padding: 0 8px; color: var(--ink-muted); }
+  .count { font-size: 14px; color: var(--ink-muted); }
+  .sort { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-muted); }
+  .sort select { height: 40px; border: 0; border-radius: var(--radius-pill); background: var(--surface); padding: 0 36px 0 16px; font: inherit; color: var(--coal); font-weight: 500; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23222' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+
+  .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; }
+  .layout.no-filters { grid-template-columns: minmax(0, 1fr); }
+  .layout.no-filters .filters { display: none; }
+  .filters { position: sticky; top: 232px; display: block; margin: 0; padding: 0; border: 0; width: auto; max-width: none; max-height: none; background: var(--cream); border-radius: var(--radius-xl); color: var(--coal); }
+  .f-body { padding: 8px 24px; }
+  .f-group { border-bottom: 1px solid var(--line-cream); padding: 18px 0; }
+  .f-group:last-child { border-bottom: 0; }
+  .f-group summary { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+  .f-group[open] summary { margin-bottom: 16px; }
+  .range { padding: 8px 9px 18px; }
+  .range .track { position: relative; display: block; height: 4px; border-radius: 2px; background: var(--line-cream); }
+  .range .fill { position: absolute; left: 0; right: 30%; top: 0; bottom: 0; background: var(--coal); border-radius: 2px; }
+  .knob { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--surface); box-shadow: 0 0 0 2px var(--coal); }
+  .k1 { left: 0; } .k2 { left: 70%; }
+  .price-in { display: flex; align-items: center; gap: 8px; color: var(--ink-muted); }
+  .price-in .field { display: flex; align-items: center; gap: 6px; height: 42px; padding: 0 12px; font-size: 13px; color: var(--ink-muted); }
+  .price-in input { border: 0; outline: 0; width: 100%; min-width: 0; font: inherit; color: var(--coal); background: transparent; }
+  .check { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: 15px; cursor: pointer; }
+  .check input { width: 18px; height: 18px; accent-color: var(--coal); margin: 0; }
+  .check .n { margin-left: auto; font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips .chip { background: var(--surface); }
+  .chips .chip.is-active { background: var(--coal); }
+  .swatches { display: flex; gap: 10px; }
+  .sw { width: 34px; height: 34px; border-radius: 50%; border: 0; padding: 3px; background: transparent; box-shadow: inset 0 0 0 1px var(--control-border); }
+  .sw span { display: block; width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .sw.on { box-shadow: inset 0 0 0 2px var(--coal); }
+
+  .promo-tile { border-radius: var(--radius-lg); color: var(--on-dark); text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; padding: 24px; color: var(--light-pale-gold); min-height: 320px; }
+  .promo-tile .h3 { color: var(--on-dark); }
+  .promo-tile > span:nth-of-type(2) { color: var(--on-dark-muted); font-size: 14px; }
+  .paging { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 56px 0 0; font-size: 14px; }
+  .paging .bar { width: 220px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .paging .bar span { display: block; height: 100%; background: var(--coal); }
+  .seo-in { max-width: 860px; display: flex; flex-direction: column; gap: 14px; }
+  .seo-in p { line-height: 1.75; }
+
+  @media (max-width: 760px) {
+    .banner-in { padding-top: 28px; padding-bottom: 28px; gap: 12px; }
+    .banner .lead { font-size: 15px; }
+    .subcats { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .subcats .chip { flex: none; }
+    .toolbar { top: 112px; margin: 14px 0 20px; justify-content: space-between; padding: 6px; }
+    .sort select { padding-left: 12px; max-width: 190px; }
+    .sort .only-desktop { display: none; }
+    .sort { gap: 0; }
+    .sort :global(svg) { display: none; }
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .filters { display: none; position: fixed; inset: auto 0 0 0; top: auto; width: 100%; max-height: 86vh; border-radius: 28px 28px 0 0; background: var(--surface); padding: 0; }
+    .filters[open] { display: flex; flex-direction: column; }
+    .filters::backdrop { background: rgba(26, 26, 26, 0.35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .f-head { display: flex !important; align-items: center; justify-content: space-between; padding: 18px 16px 10px 24px; }
+    .f-body { overflow-y: auto; flex: 1; padding: 0 24px; }
+    .f-foot { display: grid !important; grid-template-columns: 1fr 1.4fr; gap: 10px; padding: 14px 16px 20px; border-top: 1px solid var(--line); }
+    .f-foot .btn { padding: 0 12px; }
+    .chips .chip, .sw { background: var(--cream); }
+    .promo-tile { min-height: 0; padding: 16px; gap: 8px; }
+    .promo-tile .h3 { font-size: 20px; }
+    .paging { margin-top: 36px; }
+    .paging .btn { width: 100%; }
+  }
+</style>

@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { img, contact } from '../../data/catalog';
+const toc = [
+  { id: 'areas', label: 'Delivery areas' },
+  { id: 'times', label: 'Delivery times' },
+  { id: 'cost', label: 'Delivery cost' },
+  { id: 'turbo', label: 'Turbo Delivery' },
+  { id: 'faq', label: 'FAQ' },
+];
+const faq = [
+  { q: 'Can I choose an exact delivery time?', a: 'You choose a two-hour slot at checkout. For an exact time, use Turbo Delivery or message us on WhatsApp.' },
+  { q: 'What if the recipient is not at home?', a: 'Our courier will call the recipient and, if needed, you. We will agree on a new time or leave the bouquet with reception or security.' },
+  { q: 'Can I send flowers anonymously?', a: 'Yes. Tick “Send anonymously” on the product page and we will not share your name with the recipient.' },
+  { q: 'Do you deliver outside Dubai?', a: '[Delivery outside Dubai — to confirm]' },
+];
+---
+<Layout title="Delivery information — FloBerry Boutique">
+  <section class="inset title pat-light">
+    <div class="container title-in">
+      <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><span>Delivery information</span></nav>
+      <h1 class="h1">Delivery information</h1>
+      <p class="lead">Everything about how and when your flowers arrive.</p>
+    </div>
+  </section>
+
+  <div class="container page">
+    <aside class="toc">
+      <nav aria-label="On this page">
+        {toc.map((t, i) => <a href={`#${t.id}`} class:list={{ on: i === 0 }}>{t.label}</a>)}
+      </nav>
+    </aside>
+
+    <article class="content">
+      <section id="areas">
+        <h2 class="h3">Delivery areas</h2>
+        <p>We deliver across all of Dubai, from Bluewaters and Dubai Marina to Downtown, Deira and Dubai Hills. Every bouquet is assembled in our boutique on Bluewaters Island and travels in a climate-controlled vehicle.</p>
+      </section>
+      <div class="pair">
+        <img src={img.red201} alt="Red roses bouquet" width="280" height="280" loading="lazy" />
+        <img src={img.pink201} alt="Pink roses bouquet" width="280" height="280" loading="lazy" />
+      </div>
+      <section id="times">
+        <h2 class="h3">Delivery times</h2>
+        <p>Choose today, tomorrow or any date in the calendar, then pick a two-hour slot. Same-day orders are accepted until [cut-off time].</p>
+        <ul>
+          <li>Slots from [first slot] to [last slot], seven days a week</li>
+          <li>We send a photo of your bouquet before it leaves the boutique</li>
+          <li>You get a WhatsApp message once it has been delivered</li>
+        </ul>
+      </section>
+      <section id="cost">
+        <h2 class="h3">Delivery cost</h2>
+        <div class="costs">
+          <div class="cost"><Icon name="delivery-truck-01" size={26} /><span class="label-caps">Orders over AED 400</span><strong class="h3">Free</strong></div>
+          <div class="cost"><Icon name="package" size={26} /><span class="label-caps">Orders under AED 400</span><strong class="h3">[Fee]</strong></div>
+          <div class="cost dark pat-dark"><Icon name="fast-wind" size={26} /><span class="label-caps">Turbo · 40–80 min</span><strong class="h3">[Fee]</strong></div>
+        </div>
+      </section>
+      <section id="turbo">
+        <h2 class="h3">Turbo Delivery</h2>
+        <p>Need flowers right now? Turn on Turbo Delivery on the product page and we will deliver anywhere in Dubai within 40–80 minutes from order confirmation.</p>
+      </section>
+      <section id="faq">
+        <h2 class="h3">FAQ</h2>
+        <div class="faq">
+          {faq.map((f, i) => <details open={i === 0}><summary>{f.q}<Icon name="arrow-down-01" size={18} class="chev" /></summary><p>{f.a}</p></details>)}
+        </div>
+      </section>
+      <div class="help">
+        <div><h2 class="h3">Still have questions?</h2><p class="muted">Message our florists on WhatsApp or give us a call — we're happy to help.</p></div>
+        <div class="help-ctas">
+          <a class="btn btn-whatsapp" href={contact.whatsapp}><Icon name="whatsapp" size={18} />WhatsApp</a>
+          <a class="btn btn-secondary" href={contact.tel}><Icon name="call" size={18} />Call us</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .title-in { padding-top: 48px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 14px; }
+  .title .lead { color: var(--ink-secondary); }
+  .crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--ink-muted); }
+  .crumbs a { color: var(--ink-muted); text-decoration: none; }
+  .page { display: grid; grid-template-columns: 240px minmax(0, 760px); gap: 80px; padding-top: 56px; padding-bottom: 96px; justify-content: center; }
+  .toc { min-width: 0; }
+  .toc nav { position: sticky; top: 180px; display: flex; flex-direction: column; gap: 4px; }
+  .toc a { padding: 10px 16px; border-radius: var(--radius-pill); text-decoration: none; font-size: 15px; color: var(--ink-secondary); }
+  .toc a.on, .toc a:hover { background: var(--cream); color: var(--coal); }
+  .content { display: flex; flex-direction: column; gap: 48px; }
+  .content section { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 180px; }
+  .content p, .content li { font-size: 16px; line-height: 1.75; color: var(--ink-secondary); margin: 0; }
+  .content ul { margin: 0; padding-left: 20px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .pair img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-lg); }
+  .costs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cost { background: var(--cream); border-radius: var(--radius-xl); padding: 22px; display: flex; flex-direction: column; gap: 10px; color: var(--gold-text); }
+  .cost .label-caps { color: var(--ink-muted); }
+  .cost strong { color: var(--coal); }
+  .cost.dark { color: var(--light-pale-gold); background-color: var(--coal); }
+  .cost.dark .label-caps { color: var(--on-dark-muted); }
+  .cost.dark strong { color: var(--on-dark); }
+  .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+  .faq details:last-child { border-bottom: 1px solid var(--line); }
+  .faq summary { font-size: 17px; font-weight: 500; }
+  .faq p { margin-top: 10px; }
+  .help { background: var(--cream); border-radius: var(--radius-xl); padding: 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+  .help-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+  @media (max-width: 900px) { .page { grid-template-columns: 1fr; gap: 24px; } .toc nav { position: static; flex-direction: row; overflow-x: auto; scrollbar-width: none; } .toc a { flex: none; background: var(--cream); } }
+  @media (max-width: 760px) {
+    .title-in { padding-top: 28px; padding-bottom: 32px; }
+    .page { padding-top: 24px; padding-bottom: 56px; }
+    .toc nav { margin: 0 -20px; padding: 0 20px; }
+    .toc a { font-size: 13px; padding: 9px 14px; }
+    .content { gap: 36px; }
+    .content p, .content li { font-size: 15px; }
+    .pair { gap: 8px; }
+    .costs { grid-template-columns: 1fr; }
+    .cost { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 18px; border-radius: 20px; }
+    .cost strong { margin-left: auto; font-size: 22px; }
+    .help { padding: 22px; border-radius: 20px; }
+    .help-ctas, .help-ctas .btn { width: 100%; }
+  }
+</style>

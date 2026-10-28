@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+import { PRODUCT_URL, type Product } from '../data/catalog';
+interface Props extends Product { href?: string }
+const { title, img, price, old, badge = '', soldout = false, href = PRODUCT_URL } = Astro.props;
+---
+<article class:list={['card', { sold: soldout }]}>
+  <div class="media">
+    <a href={href} aria-label={title}><img src={img} alt={title} width="280" height="280" loading="lazy" /></a>
+    <div class="badges">
+      {soldout ? <span class="badge glass">Sold out</span>
+        : badge === 'sale' ? <span class="badge glass-dark">Sale −15%</span>
+        : badge === 'best' ? <span class="badge glass">Best seller</span>
+        : badge === 'new' ? <span class="badge badge-new">New</span> : null}
+    </div>
+    <button class="wish glass" aria-label="Add to wishlist"><Icon name="favourite" size={18} /></button>
+  </div>
+  <div class="info">
+    <a href={href} class="title">{title}</a>
+    <div class="price"><span class:list={{ sale: !!old }}>{price}</span>{old && <s>{old}</s>}</div>
+    <span class="meta">4 packing options</span>
+  </div>
+  {soldout
+    ? <button class="btn btn-sm btn-block notify" disabled>Notify me</button>
+    : <button class="btn btn-sm btn-block btn-secondary">Add to cart</button>}
+</article>
+
+<style>
+  .card { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .media { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius-lg); overflow: hidden; background: var(--cream); }
+  .media a, .media img { display: block; width: 100%; height: 100%; }
+  .media img { object-fit: cover; transition: transform .5s ease; }
+  .card:hover .media img { transform: scale(1.03); }
+  .sold .media img { opacity: 0.55; filter: grayscale(60%); }
+  .badges { position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; pointer-events: none; }
+  .wish { position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; color: var(--coal); }
+  .info { display: flex; flex-direction: column; gap: 6px; }
+  .title { font-size: 16px; font-weight: 500; line-height: 1.35; text-decoration: none; }
+  .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; font-size: 16px; font-weight: 600; }
+  .price .sale { color: var(--gold-text); }
+  .price s { font-size: 14px; font-weight: 400; color: var(--ink-muted); }
+  .meta { font-size: 13px; color: var(--ink-muted); }
+  .notify { background: var(--cream); color: var(--ink-muted); border-color: var(--control-border); cursor: not-allowed; }
+  @media (max-width: 760px) {
+    .title { font-size: 14px; }
+    .price { font-size: 15px; gap: 6px; }
+    .price s { font-size: 13px; }
+    .meta { font-size: 12px; }
+    .badges { top: 8px; left: 8px; }
+    .badge { padding: 5px 9px; font-size: 10px; }
+    .wish { top: 6px; right: 6px; width: 36px; height: 36px; }
+    .btn { padding: 0 10px; font-size: 11px; letter-spacing: 0.1em; }
+  }
+</style>

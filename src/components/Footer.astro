@@ -1,0 +1,104 @@
+---
+import Icon from './Icon.astro';
+import { nav, contact } from '../data/catalog';
+const help = [
+  { label: 'Delivery information', href: '/pages/delivery/' },
+  { label: 'Terms & Conditions', href: '/pages/delivery/' },
+  { label: 'Privacy Policy', href: '/pages/delivery/' },
+  { label: 'Contact us', href: '/pages/delivery/' },
+];
+const socials = [
+  { icon: 'instagram', href: contact.instagram, label: 'Instagram' },
+  { icon: 'telegram', href: contact.telegram, label: 'Telegram' },
+  { icon: 'tiktok', href: contact.tiktok, label: 'TikTok' },
+];
+---
+<footer class="footer">
+  <div class="container grid">
+    <div class="brand">
+      <img src="/img/brand/logo-full-white.svg" alt="FloBerry Boutique" width="150" height="117" />
+      <p class="only-desktop">Handcrafted bouquets and flower arrangements from our boutique on Bluewaters Island. Delivery anywhere in Dubai.</p>
+      <div class="social only-desktop">
+        {socials.map((s) => <a href={s.href} aria-label={s.label}><Icon name={s.icon} size={18} /></a>)}
+      </div>
+    </div>
+
+    <div class="m-cta only-mobile">
+      <a class="btn btn-whatsapp btn-block" href={contact.whatsapp}><Icon name="whatsapp" size={18} />WhatsApp chat</a>
+      <a class="btn btn-block phone" href={contact.tel}>{contact.phone}</a>
+    </div>
+
+    <details class="col" open>
+      <summary class="col-title">Shop<Icon name="arrow-down-01" size={16} class="chev only-mobile" /></summary>
+      <nav aria-label="Shop">{nav.map((n) => <a href={n.href}>{n.label}</a>)}</nav>
+    </details>
+    <details class="col" open>
+      <summary class="col-title">Help<Icon name="arrow-down-01" size={16} class="chev only-mobile" /></summary>
+      <nav aria-label="Help">{help.map((n) => <a href={n.href}>{n.label}</a>)}</nav>
+    </details>
+    <details class="col" open>
+      <summary class="col-title">Visit &amp; contact<Icon name="arrow-down-01" size={16} class="chev only-mobile" /></summary>
+      <div class="contact">
+        <span>Shop 13, Residence Building 7,<br />Bluewaters, Dubai, UAE</span>
+        <a href={contact.tel} class="only-desktop">{contact.phone}</a>
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        <a class="btn btn-whatsapp btn-sm wa only-desktop" href={contact.whatsapp}><Icon name="whatsapp" size={16} />WhatsApp chat</a>
+      </div>
+    </details>
+
+    <div class="social only-mobile">
+      {socials.map((s) => <a href={s.href} aria-label={s.label}><Icon name={s.icon} size={18} /></a>)}
+    </div>
+  </div>
+  <div class="container bottom">
+    <span>© 2026 FloBerry Boutique. All rights reserved.</span>
+    <div class="pay"><span>[Payment icons]</span><span>AED</span></div>
+  </div>
+</footer>
+
+<script>
+  // On mobile the columns are accordions (closed by default, last one open); on desktop always open.
+  const mq = window.matchMedia('(max-width: 760px)');
+  const cols = [...document.querySelectorAll<HTMLDetailsElement>('.footer details.col')];
+  const sync = () => cols.forEach((d, i) => (d.open = !mq.matches || i === cols.length - 1));
+  sync();
+  mq.addEventListener('change', sync);
+</script>
+
+<style>
+  .footer { background: var(--coal-deep); color: #d9d2cb; border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; margin-top: 16px; }
+  .grid { padding-top: 72px; padding-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 48px; }
+  .brand { display: flex; flex-direction: column; gap: 20px; }
+  .brand img { width: 150px; height: auto; }
+  .brand p { font-size: 14px; line-height: 1.7; }
+  .social { display: flex; gap: 10px; }
+  .social a { width: 40px; height: 40px; border: 1px solid #4a4540; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--light-pale-gold); }
+  .social a:hover { background: rgba(255, 255, 255, 0.06); color: var(--light-pale-gold); }
+  .col summary { cursor: default; }
+  .col-title { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--light-pale-gold); margin-bottom: 18px; }
+  .col nav, .contact { display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.5; }
+  .col a { color: #d9d2cb; text-decoration: none; }
+  .col a:hover { color: var(--on-dark); }
+  .contact .wa { align-self: flex-start; margin-top: 4px; color: var(--on-dark); }
+  .bottom { padding-top: 22px; padding-bottom: 28px; border-top: 1px solid #3a3631; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; font-size: 13px; color: #a8a099; }
+  .pay { display: flex; gap: 8px; }
+  .pay span { padding: 5px 10px; border: 1px solid #4a4540; border-radius: var(--radius-pill); }
+
+  @media (max-width: 760px) {
+    .footer { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+    .grid { display: flex; flex-direction: column; gap: 0; padding-top: 48px; padding-bottom: 20px; }
+    .brand { align-items: center; margin-bottom: 28px; }
+    .brand img { width: 130px; }
+    .m-cta { display: flex !important; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .m-cta .phone { border: 1px solid #4a4540; color: var(--on-dark); font-size: 15px; letter-spacing: 0; text-transform: none; font-weight: 500; }
+    .col { border-top: 1px solid #3a3631; padding: 16px 0; }
+    .col:last-of-type { border-bottom: 1px solid #3a3631; }
+    .col summary { cursor: pointer; }
+    .col-title { font-size: 13px; letter-spacing: 0.14em; margin: 0; }
+    .col nav, .contact { padding-top: 14px; font-size: 15px; }
+    .social { justify-content: center; margin-top: 28px; }
+    .social a { width: 44px; height: 44px; }
+    .bottom { border-top: 0; justify-content: center; text-align: center; padding-top: 8px; font-size: 12px; }
+    .pay { display: none; }
+  }
+</style>

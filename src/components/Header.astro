@@ -1,0 +1,107 @@
+---
+import Icon from './Icon.astro';
+import { nav, contact, COLLECTION_URL } from '../data/catalog';
+const mobileNav = [
+  { label: 'Roses', href: COLLECTION_URL },
+  { label: 'Signature', href: COLLECTION_URL },
+  { label: 'Occasions', href: COLLECTION_URL },
+  { label: 'Gifts', href: COLLECTION_URL },
+  { label: 'Offers', href: COLLECTION_URL, accent: true },
+];
+---
+<header class="site-header">
+  <div class="topbar">
+    <div class="container topbar-in">
+      <span class="topbar-note">Same-day delivery across Dubai · Free over AED 400</span>
+      <span class="topbar-note-m">Free delivery over AED 400 · Turbo 40–80 min</span>
+      <div class="topbar-contacts only-desktop">
+        <a href={contact.tel}><Icon name="call" size={15} />{contact.phone}</a>
+        <a href={`mailto:${contact.email}`}><Icon name="mail-01" size={15} />{contact.email}</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop: floating glass bar -->
+  <div class="bar glass only-desktop">
+    <div class="container bar-row">
+      <label class="search">
+        <Icon name="search-01" size={18} />
+        <input type="search" placeholder="Search bouquets, roses, gifts" aria-label="Search" />
+      </label>
+      <a href="/" class="logo" aria-label="FloBerry Boutique — home"><img src="/img/brand/logo-full-coal.svg" alt="FloBerry Boutique" width="82" height="64" /></a>
+      <div class="actions">
+        <a class="btn btn-whatsapp btn-wa" href={contact.whatsapp}><Icon name="whatsapp" size={17} />WhatsApp</a>
+        <a class="round" href="#" aria-label="Account"><Icon name="user" size={22} /></a>
+        <a class="round cart" href="/cart/" aria-label="Cart, 2 items"><Icon name="shopping-bag-02" size={22} /><span class="count">2</span></a>
+      </div>
+    </div>
+    <nav aria-label="Main" class="mainnav">
+      <ul class="container">
+        {nav.map((n) => (
+          <li><a href={n.href} class:list={{ accent: n.accent }}>{n.label}{n.menu && <Icon name="arrow-down-01" size={14} />}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Mobile -->
+  <div class="bar-m glass only-mobile">
+    <div class="side">
+      <button class="round" aria-label="Menu"><Icon name="menu-01" size={22} /></button>
+      <button class="round" aria-label="Search"><Icon name="search-01" size={21} /></button>
+    </div>
+    <a href="/" class="logo-m" aria-label="FloBerry — home"><img src="/img/brand/wordmark-coal.svg" alt="FloBerry" width="107" height="28" /></a>
+    <div class="side end">
+      <a class="round wa" href={contact.whatsapp} aria-label="WhatsApp"><Icon name="whatsapp" size={22} /></a>
+      <a class="round cart" href="/cart/" aria-label="Cart, 2 items"><Icon name="shopping-bag-02" size={22} /><span class="count">2</span></a>
+    </div>
+  </div>
+  <nav aria-label="Categories" class="chips-m only-mobile">
+    {mobileNav.map((n) => <a href={n.href} class:list={{ accent: n.accent }}>{n.label}</a>)}
+  </nav>
+</header>
+
+<style>
+  .site-header { position: relative; z-index: 20; padding-bottom: 10px; }
+  .topbar { background: var(--coal); color: var(--on-dark-muted); font-size: 13px; }
+  .topbar-in { height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .topbar-note { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-note-m { display: none; }
+  .topbar-contacts { display: flex; gap: 24px; flex: none; }
+  .topbar-contacts a { display: flex; align-items: center; gap: 8px; color: var(--on-dark-muted); text-decoration: none; }
+  .topbar-contacts a:hover { color: var(--on-dark); }
+
+  .bar { margin: 10px var(--inset) 0; border-radius: var(--radius-xl); overflow: hidden; position: sticky; top: 8px; }
+  .bar-row { height: 84px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 24px; }
+  .search { display: flex; align-items: center; gap: 10px; height: 42px; max-width: 300px; padding: 0 16px; background: rgba(247, 242, 236, 0.8); border-radius: var(--radius-pill); color: var(--ink-muted); }
+  .search input { border: 0; outline: 0; background: transparent; font-size: 14px; color: var(--coal); width: 100%; min-width: 0; }
+  .logo { display: flex; justify-content: center; }
+  .logo img { height: 64px; width: auto; }
+  .actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+  .btn-wa { height: 40px; padding: 0 16px; letter-spacing: 0.08em; }
+  .round { position: relative; width: 44px; height: 44px; border: 0; background: transparent; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--coal); padding: 0; }
+  .round:hover { background: rgba(34, 34, 34, 0.06); color: var(--coal); }
+  .count { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--coal); color: var(--on-dark); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .mainnav { border-top: 1px solid rgba(34, 34, 34, 0.08); }
+  .mainnav ul { list-style: none; margin: 0 auto; height: 50px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 40px; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+  .mainnav a { display: flex; align-items: center; gap: 6px; text-decoration: none; }
+  .mainnav a.accent { color: var(--gold-text); }
+
+  @media (max-width: 760px) {
+    .topbar-in { height: 32px; justify-content: center; font-size: 12px; }
+    .topbar-note { display: none; }
+    .topbar-note-m { display: inline; }
+    .bar-m { margin: 8px 8px 0; height: 60px; padding: 0 6px; border-radius: 20px; display: grid !important; grid-template-columns: 88px minmax(0, 1fr) 88px; align-items: center; position: sticky; top: 6px; z-index: 30; }
+    .side { display: flex; }
+    .side.end { justify-content: flex-end; }
+    .logo-m { display: flex; justify-content: center; }
+    .logo-m img { height: 28px; width: auto; }
+    .wa { color: var(--sage-strong); }
+    .count { top: 5px; right: 3px; min-width: 17px; height: 17px; font-size: 10px; }
+    .chips-m { display: flex !important; gap: 6px; overflow-x: auto; padding: 10px 16px 0; scrollbar-width: none; }
+    .chips-m::-webkit-scrollbar { display: none; }
+    .chips-m a { flex: none; display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: var(--radius-pill); background: var(--cream); text-decoration: none; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+    .chips-m a.accent { color: var(--gold-text); }
+    .site-header { position: sticky; top: 0; padding-bottom: 6px; }
+  }
+</style>
