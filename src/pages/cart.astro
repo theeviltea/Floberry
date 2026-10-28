@@ -115,7 +115,7 @@ const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
   .note { display: flex; flex-direction: column; gap: 10px; }
   .note textarea { font: inherit; font-size: 15px; padding: 14px 16px; resize: vertical; color: var(--coal); }
 
-  .summary { position: sticky; top: 170px; background: var(--cream); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .summary { position: sticky; top: calc(var(--sticky-top) + 8px); background: var(--cream); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
   .free { display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--sage-strong); font-weight: 500; }
   .free > span:first-child { display: flex; align-items: center; gap: 8px; }
   .free .bar { height: 4px; border-radius: 2px; background: var(--line-cream); overflow: hidden; }

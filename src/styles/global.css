@@ -46,9 +46,11 @@
   --container: 1320px;
   --gutter: 40px;
   --inset: 16px;
+  --sticky-top: 136px;
+  --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
 }
 @media (max-width: 760px) {
-  :root { --gutter: 20px; --inset: 8px; }
+  :root { --gutter: 20px; --inset: 8px; --sticky-top: 84px; }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -204,3 +206,14 @@ details > summary { list-style: none; cursor: pointer; display: flex; align-item
 details > summary::-webkit-details-marker { display: none; }
 details > summary .chev { transition: transform .2s; flex: none; }
 details[open] > summary .chev { transform: rotate(180deg); }
+
+/* scroll reveal: elements are hidden only once the reveal script has run */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-on [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+  .reveal-on [data-reveal="fade"] { transform: none; }
+  .reveal-on [data-reveal="zoom"] { transform: scale(0.96); }
+  .reveal-on [data-reveal].in { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

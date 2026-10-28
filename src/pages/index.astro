@@ -44,18 +44,18 @@ const perks = [
     </div>
   </section>
 
-  <div class="container trust">
+  <div class="container trust" data-reveal-group>
     {trust.map((t) => <span class="glass trust-pill"><Icon name={t.icon} size={18} />{t.text}</span>)}
   </div>
 
   <!-- Collection list -->
   <section class="section">
     <div class="container">
-      <div class="section-head center">
+      <div class="section-head center" data-reveal>
         <span class="eyebrow">Shop by collection</span>
         <h2 class="h2">Find the perfect bouquet</h2>
       </div>
-      <div class="arches">
+      <div class="arches" data-reveal-group>
         {cats.map((c) => (
           <a class="arch" href={COLLECTION_URL}>
             <span class="arch-img"><img src={c.img} alt="" width="280" height="280" loading="lazy" /></span>
@@ -69,7 +69,7 @@ const perks = [
   <!-- Featured -->
   <section class="section inset featured">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <div class="titles"><span class="eyebrow">Signature by FloBerry</span><h2 class="h2">Our most loved arrangements</h2></div>
         <div class="tabs" role="tablist">
           <button class="chip is-active" role="tab" aria-selected="true">Bestsellers</button>
@@ -77,14 +77,14 @@ const perks = [
           <button class="chip" role="tab">Under AED 500</button>
         </div>
       </div>
-      <div class="product-grid">{signature.map((p) => <ProductCard {...p} />)}</div>
+      <div class="product-grid" data-reveal-group>{signature.map((p) => <ProductCard {...p} />)}</div>
       <div class="more"><a class="btn btn-secondary" href={COLLECTION_URL}>View full collection</a></div>
     </div>
   </section>
 
   <!-- Promo banners -->
   <section class="section">
-    <div class="container promos">
+    <div class="container promos" data-reveal-group>
       <article class="promo pat-dark">
         <div class="promo-text">
           <span class="eyebrow on-dark">February 14</span>
@@ -109,25 +109,25 @@ const perks = [
   <!-- Carousel -->
   <section class="section carousel" style="padding-top:0">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <div class="titles"><span class="eyebrow">Roses collection</span><h2 class="h2">Say it with roses</h2></div>
         <div class="arrows only-desktop">
           <button class="icon-btn" aria-label="Previous" data-scroll="-1"><Icon name="arrow-left-01" size={20} /></button>
           <button class="icon-btn" aria-label="Next" data-scroll="1"><Icon name="arrow-right-01" size={20} /></button>
         </div>
       </div>
-      <div class="scroll-row track">{[...roses, ...signature].map((p) => <div class="slide"><ProductCard {...p} /></div>)}</div>
+      <div class="scroll-row track" data-reveal>{[...roses, ...signature].map((p) => <div class="slide"><ProductCard {...p} /></div>)}</div>
     </div>
   </section>
 
   <!-- About -->
   <section class="section inset about">
     <div class="container about-grid">
-      <div class="about-media">
+      <div class="about-media" data-reveal="zoom">
         <img class="a1" src={img.pink201} alt="Pink roses bouquet" width="280" height="280" loading="lazy" />
-        <img class="a2" src={img.white101} alt="White rose basket" width="280" height="280" loading="lazy" />
+        <img class="a2" data-parallax="-40" src={img.white101} alt="White rose basket" width="280" height="280" loading="lazy" />
       </div>
-      <div class="about-text">
+      <div class="about-text" data-reveal>
         <img src="/img/brand/pictogram-gold.svg" alt="" width="48" height="48" />
         <span class="eyebrow">About FloBerry</span>
         <h2 class="h2">A boutique on Bluewaters Island</h2>
@@ -142,7 +142,7 @@ const perks = [
 
   <!-- Perks -->
   <section class="section">
-    <div class="container perks">
+    <div class="container perks" data-reveal-group>
       {perks.map((p) => (
         <div class="perk"><span class="perk-ic"><Icon name={p.icon} size={24} /></span><h3 class="h4">{p.title}</h3><p class="muted">{p.text}</p></div>
       ))}
@@ -153,10 +153,10 @@ const perks = [
   <section class="inset map" id="map">
     <div class="map-bg" aria-hidden="true">
       <span class="water"></span><span class="road r1"></span><span class="road r2"></span><span class="road r3"></span><span class="island"></span>
-      <span class="pin"><img src="/img/brand/pictogram-white.svg" alt="" width="26" height="26" /></span>
+      <span class="pin"><span class="pulse"></span><img src="/img/brand/pictogram-white.svg" alt="" width="26" height="26" /></span>
     </div>
     <div class="container map-in">
-      <div class="store glass">
+      <div class="store glass" data-reveal>
         <span class="eyebrow">Visit the boutique</span>
         <h2 class="h3">FloBerry on Bluewaters</h2>
         <ul>
@@ -174,7 +174,7 @@ const perks = [
 
   <!-- CTA -->
   <section class="inset cta pat-dark">
-    <div class="container cta-in">
+    <div class="container cta-in" data-reveal>
       <h2 class="h2">Need something special?</h2>
       <p class="lead">Message our florists on WhatsApp or give us a call — we're happy to help.</p>
       <div class="hero-ctas center">
@@ -186,6 +186,21 @@ const perks = [
 </Layout>
 
 <script>
+  const par = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
+  if (par.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let raf = 0;
+    const run = () => {
+      raf = 0;
+      const vh = innerHeight;
+      par.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const p = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around the viewport centre
+        el.style.transform = `translateY(${(p * Number(el.dataset.parallax)).toFixed(1)}px)`;
+      });
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(run); }, { passive: true });
+    run();
+  }
   document.querySelectorAll<HTMLButtonElement>('[data-scroll]').forEach((b) =>
     b.addEventListener('click', () => {
       const track = b.closest('section')!.querySelector<HTMLElement>('.track')!;
@@ -203,14 +218,22 @@ const perks = [
 
 <style>
   .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; }
-  .hero-text { color: var(--on-dark); display: flex; align-items: center; }
+  .hero-text { color: var(--on-dark); display: flex; align-items: center; animation: drift 40s linear infinite; }
+  @keyframes drift { to { background-position: 120px 120px; } }
+  .hero-in > * { animation: rise 1.1s var(--ease) both; }
+  .hero-in > :nth-child(2) { animation-delay: .12s; }
+  .hero-in > :nth-child(3) { animation-delay: .26s; }
+  .hero-in > :nth-child(4) { animation-delay: .4s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } }
+  @keyframes kenburns { from { transform: scale(1.09); } }
+  @keyframes fade { from { opacity: 0; } }
   .hero-in { padding: 72px max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); padding-right: 64px; display: flex; flex-direction: column; gap: 24px; max-width: 720px; margin-left: auto; width: 100%; }
   .hero-in .lead { color: var(--on-dark-muted); max-width: 460px; }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
   .hero-ctas.center { justify-content: center; }
   .hero-media { position: relative; overflow: hidden; background: var(--cream); }
-  .hero-media img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .video-chip { position: absolute; left: 24px; bottom: 24px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--radius-pill); color: var(--on-dark); font-size: 12px; font-weight: 500; }
+  .hero-media img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; animation: kenburns 2.8s var(--ease) both, fade 1.2s ease both; }
+  .video-chip { animation: rise 1s var(--ease) .9s both; position: absolute; left: 24px; bottom: 24px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--radius-pill); color: var(--on-dark); font-size: 12px; font-weight: 500; }
 
   .trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: -28px; position: relative; z-index: 2; }
   .trust-pill { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 500; color: var(--coal); }
@@ -218,9 +241,14 @@ const perks = [
 
   .arches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
   .arch { display: flex; flex-direction: column; align-items: center; gap: 16px; text-decoration: none; }
+  .arch-img { transition: transform .6s var(--ease), box-shadow .6s var(--ease); }
+  .arch:hover .arch-img { transform: translateY(-8px); box-shadow: 0 22px 40px -18px rgba(34, 34, 34, 0.35); }
+  .arch-label { position: relative; }
+  .arch-label::after { content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 1px; background: currentColor; transform: scaleX(0); transition: transform .4s var(--ease); }
+  .arch:hover .arch-label::after { transform: scaleX(1); }
   .arch-img { width: 100%; aspect-ratio: 3 / 4; border-radius: 999px 999px 20px 20px; overflow: hidden; background: var(--cream); }
-  .arch-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
-  .arch:hover img { transform: scale(1.04); }
+  .arch-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+  .arch:hover img { transform: scale(1.06); }
   .arch-label { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 
   .featured { background: var(--cream); }
@@ -229,7 +257,8 @@ const perks = [
 
   .promos { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .promo { display: grid; grid-template-columns: 1.1fr 1fr; border-radius: var(--radius-lg); overflow: hidden; min-height: 320px; }
-  .promo img { width: 100%; height: 100%; object-fit: cover; }
+  .promo img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .promo:hover img { transform: scale(1.05); }
   .promo-text { padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 14px; }
   .pat-dark.promo { color: var(--on-dark); }
   .pat-dark.promo p { color: var(--on-dark-muted); }
@@ -245,12 +274,14 @@ const perks = [
   .about-media { position: relative; height: 520px; }
   .about-media img { position: absolute; object-fit: cover; }
   .a1 { left: 0; top: 0; width: 62%; height: 88%; border-radius: 999px 999px 20px 20px; }
-  .a2 { right: 0; bottom: 0; width: 46%; height: 52%; border-radius: var(--radius-lg); border: 6px solid var(--cream); }
+  .a2 { will-change: transform; right: 0; bottom: 0; width: 46%; height: 52%; border-radius: var(--radius-lg); border: 6px solid var(--cream); }
   .about-text { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
   .about-text .lead { color: var(--ink-secondary); }
 
   .perks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
   .perk { background: var(--cream); border-radius: var(--radius-xl); padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .perk-ic { transition: transform .5s var(--ease), background-color .5s var(--ease), color .5s var(--ease); }
+  .perk:hover .perk-ic { transform: rotate(-8deg) scale(1.06); background: var(--sage-moss); color: #fff; }
   .perk-ic { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--sage-strong); display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
   .perk p { font-size: 14px; line-height: 1.6; }
 
@@ -263,7 +294,11 @@ const perks = [
   .r3 { left: 50%; right: 0; top: 46%; height: 6px; transform: rotate(-18deg); }
   .island { position: absolute; left: 66%; top: 32%; width: 160px; height: 120px; background: #EFE9E1; border-radius: 50%; }
   .pin { position: absolute; left: calc(66% + 56px); top: calc(32% + 26px); width: 52px; height: 52px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--coal); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(34,34,34,.25); }
-  .pin img { transform: rotate(45deg); }
+  .pin img { transform: rotate(45deg); position: relative; }
+  .pin { animation: bob 3.2s ease-in-out infinite; }
+  @keyframes bob { 50% { translate: 0 -6px; } }
+  .pulse { position: absolute; inset: 0; border-radius: inherit; background: var(--coal); opacity: .35; animation: pulse 2.6s var(--ease) infinite; }
+  @keyframes pulse { to { transform: scale(2.2); opacity: 0; } }
   .map-in { position: relative; width: 100%; }
   .store { max-width: 400px; padding: 32px; border-radius: var(--radius-xl); display: flex; flex-direction: column; gap: 14px; }
   .store ul { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--ink-secondary); }
@@ -271,7 +306,7 @@ const perks = [
   .store li :global(svg) { flex: none; color: var(--gold-text); margin-top: 1px; }
   .store-ctas { display: flex; flex-wrap: wrap; gap: 8px; }
 
-  .cta { color: var(--on-dark); margin-top: 16px; }
+  .cta { color: var(--on-dark); margin-top: 16px; animation: drift 50s linear infinite; }
   .cta-in { padding-top: 88px; padding-bottom: 88px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; }
   .cta-in .lead { color: var(--on-dark-muted); max-width: 520px; }
 

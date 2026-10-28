@@ -133,7 +133,7 @@ const colours = [
   .subcats .chip { background: var(--surface); text-decoration: none; }
   .subcats .chip.is-active { background: var(--coal); }
 
-  .toolbar { position: sticky; top: 156px; z-index: 10; margin: 24px 0 32px; display: flex; align-items: center; gap: 20px; padding: 8px 8px 8px 12px; border-radius: var(--radius-pill); }
+  .toolbar { position: sticky; top: var(--sticky-top); z-index: 10; margin: 24px 0 32px; display: flex; align-items: center; gap: 20px; padding: 8px 8px 8px 12px; border-radius: var(--radius-pill); }
   .tool-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: var(--radius-pill); background: var(--surface); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coal); }
   .active { align-items: center; gap: 8px; flex: 1; }
   @media (min-width: 761px) { .active { display: flex; } }
@@ -145,7 +145,7 @@ const colours = [
   .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; }
   .layout.no-filters { grid-template-columns: minmax(0, 1fr); }
   .layout.no-filters .filters { display: none; }
-  .filters { position: sticky; top: 232px; display: block; margin: 0; padding: 0; border: 0; width: auto; max-width: none; max-height: none; background: var(--cream); border-radius: var(--radius-xl); color: var(--coal); }
+  .filters { position: sticky; top: calc(var(--sticky-top) + 76px); display: block; margin: 0; padding: 0; border: 0; width: auto; max-width: none; max-height: none; background: var(--cream); border-radius: var(--radius-xl); color: var(--coal); }
   .f-body { padding: 8px 24px; }
   .f-group { border-bottom: 1px solid var(--line-cream); padding: 18px 0; }
   .f-group:last-child { border-bottom: 0; }
@@ -184,7 +184,7 @@ const colours = [
     .banner .lead { font-size: 15px; }
     .subcats { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
     .subcats .chip { flex: none; }
-    .toolbar { top: 112px; margin: 14px 0 20px; justify-content: space-between; padding: 6px; }
+    .toolbar { margin: 14px 0 20px; justify-content: space-between; padding: 6px; }
     .sort select { padding-left: 12px; max-width: 190px; }
     .sort .only-desktop { display: none; }
     .sort { gap: 0; }

@@ -22,5 +22,30 @@ const { title, description = 'Handcrafted flower bouquets from FloBerry Boutique
     <Header />
     <main><slot /></main>
     <Footer />
+    <script is:inline>
+      (function () {
+        document.querySelectorAll('[data-reveal-group]').forEach(function (g) {
+          Array.prototype.forEach.call(g.children, function (c, i) {
+            if (!c.hasAttribute('data-reveal')) c.setAttribute('data-reveal', g.getAttribute('data-reveal-group') || '');
+            c.style.setProperty('--i', i % 6);
+          });
+        });
+        var groups = document.querySelectorAll('[data-reveal-group]');
+        var targets = Array.prototype.filter.call(document.querySelectorAll('[data-reveal], [data-reveal-group]'), function (el) { return !el.parentElement.closest('[data-reveal-group]'); });
+        if (!targets.length || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // a group reveals all its children together (staggered), so items in horizontal scrollers animate too
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var el = e.target;
+            if (el.hasAttribute('data-reveal-group')) Array.prototype.forEach.call(el.children, function (c) { c.classList.add('in'); });
+            else el.classList.add('in');
+            io.unobserve(el);
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+        document.documentElement.classList.add('reveal-on');
+        targets.forEach(function (el) { io.observe(el); });
+      })();
+    </script>
   </body>
 </html>
