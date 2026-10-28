@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
-import { all, photo, cutout, contact, COLLECTION_URL, PRODUCT_URL, type Shot } from '../data/catalog';
+import { all, photo, contact, COLLECTION_URL, PRODUCT_URL, type Shot } from '../data/catalog';
 import meta from '../data/gallery-meta.json';
 
 /**
@@ -47,10 +47,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
                 <img class="bg" {...(i === 0 ? { src: photo(s.shot, '2400'), fetchpriority: 'high' } : { 'data-src': photo(s.shot, '2400') })} alt="" width="2400" height="1600" />
               </picture>
               <span class="word" aria-hidden="true"><span class="word-in">{[...s.word].map((ch, k) => <span class="ch" style={`--k:${k}`}>{ch}</span>)}</span></span>
-              <picture>
-                <source media="(max-width: 760px)" {...(i === 0 ? { srcset: cutout(s.shot, '1400') } : { 'data-srcset': cutout(s.shot, '1400') })} />
-                <img class="cut" {...(i === 0 ? { src: cutout(s.shot) } : { 'data-src': cutout(s.shot) })} alt="" width="2400" height="1600" />
-              </picture>
             </div></div>
           </figure>
         ))}
@@ -375,10 +371,9 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   .plate { position: absolute; inset: 0; }
   .plate picture, .plate img { position: absolute; inset: 0; width: 100%; height: 100%; }
   .frame img { object-fit: cover; object-position: 50% 50%; }
-  .slide .bg, .slide .cut { transform: scale(1.1); transition: transform 8s cubic-bezier(.2,.6,.3,1); }
-  .slide.on .bg, .slide.on .cut { transform: scale(1); }
-  .cut { z-index: 2; }
-  .word { position: absolute; z-index: 1; left: 0; right: 0; top: calc(var(--wy) * 100%); text-align: center; pointer-events: none;
+  .slide .bg { transform: scale(1.1); transition: transform 8s cubic-bezier(.2,.6,.3,1); }
+  .slide.on .bg { transform: scale(1); }
+  .word { position: absolute; z-index: 2; left: 0; right: 0; top: calc(var(--wy) * 100%); text-align: center; pointer-events: none;
           transform: translate3d(calc(var(--mx) * -40px), calc(-50% + var(--my) * -24px - var(--p) * 120px), 0); }
   .word-in { display: inline-block; overflow: hidden; padding: 0 0.04em 0.06em; font-family: var(--font-display); font-weight: 400; line-height: 0.9; letter-spacing: -0.02em; color: var(--coal);
              font-size: min(25vw, calc(165vw / var(--len)), 60vh); }

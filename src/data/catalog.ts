@@ -18,7 +18,6 @@ const G = '/img/gallery/';
 export type Shot = 'red-51' | 'red-101' | 'lemon-basket' | 'lemon-basket-close' | 'fuchsia-basket' | 'fuchsia-basket-close' | 'winter-candles' | 'golden-noel';
 /** card = 4:5 crop (960×1200); 1400 / 2400 = full studio frame (3:2) */
 export const photo = (s: Shot, v: 'card' | '1400' | '2400' = 'card') => `${G}${s}-${v}.webp`;
-export const cutout = (s: Shot, v: '1400' | '2400' = '2400') => `${G}${s}-cut${v === '1400' ? '-1400' : ''}.webp`;
 
 export const PRODUCT_URL = '/products/bouquet-of-51-red-roses/';
 export const COLLECTION_URL = '/collections/signature/';
