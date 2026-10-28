@@ -1,4 +1,4 @@
-// Demo catalogue for the preview. Prices for packing variants and add-ons are illustrative.
+// Demo catalogue for the preview. Product names, prices, packing and add-on prices are illustrative.
 export type Badge = '' | 'sale' | 'best' | 'new';
 export interface Product {
   title: string;
@@ -7,53 +7,34 @@ export interface Product {
   old?: string;
   badge?: Badge;
   soldout?: boolean;
+  /** exhibit number shown on the museum-style label */
+  no?: string;
+  /** one-line composition, like a gallery wall label */
+  materials?: string;
+  href?: string;
 }
 
-const IMG = '/img/products/';
-export const img = {
-  orange555: IMG + 'orange-roses-555-basket.webp',
-  red201: IMG + 'red-roses-201-ribbon.webp',
-  pink201: IMG + 'pink-roses-201-ribbon.webp',
-  white101: IMG + 'white-roses-101-basket.webp',
-  red51: IMG + 'red-roses-51-air.webp',
-  lightPink201: IMG + 'light-pink-roses-201.webp',
-  red51Large: IMG + 'red-roses-51-air-large.webp',
-};
+const G = '/img/gallery/';
+export type Shot = 'red-51' | 'red-101' | 'lemon-basket' | 'lemon-basket-close' | 'fuchsia-basket' | 'fuchsia-basket-close' | 'winter-candles' | 'golden-noel';
+/** card = 4:5 crop (960×1200); 1400 / 2400 = full studio frame (3:2) */
+export const photo = (s: Shot, v: 'card' | '1400' | '2400' = 'card') => `${G}${s}-${v}.webp`;
+export const cutout = (s: Shot, v: '1400' | '2400' = '2400') => `${G}${s}-cut${v === '1400' ? '-1400' : ''}.webp`;
 
 export const PRODUCT_URL = '/products/bouquet-of-51-red-roses/';
-export const COLLECTION_URL = '/collections/red-roses/';
+export const COLLECTION_URL = '/collections/signature/';
 
-export const signature: Product[] = [
-  { img: img.orange555, title: 'Bouquet of 555 Orange Roses', price: 'AED 6,590', badge: 'best' },
-  { img: img.white101, title: '101 White Rose Basket', price: 'AED 1,990' },
-  { img: img.pink201, title: 'Bouquet of 201 Pink Roses', price: 'AED 1,960', badge: 'new' },
-  { img: img.red201, title: 'Bouquet of 201 Red Roses', price: 'AED 1,960', badge: 'best' },
-];
+export const p = {
+  red51: { no: '051', img: photo('red-51'), title: 'Bouquet of 51 Red Roses', materials: '51 red roses, 60 cm · satin ribbon', price: 'AED 595', old: 'AED 700', badge: 'sale' },
+  red101: { no: '101', img: photo('red-101'), title: 'Bouquet of 101 Red Roses', materials: '101 red roses, 60 cm · satin ribbon', price: 'AED 1,095', badge: 'best' },
+  lemon: { no: '024', img: photo('lemon-basket'), title: 'Lemon Garden Basket', materials: 'Spray roses, lisianthus, anthurium · woven basket', price: 'AED 690', badge: 'new' },
+  fuchsia: { no: '031', img: photo('fuchsia-basket'), title: 'Fuchsia Plume Basket', materials: 'Garden roses, gerberas, feathers · wicker basket', price: 'AED 750', badge: 'best' },
+  winter: { no: '112', img: photo('winter-candles'), title: 'Winter Candle Box', materials: 'White roses, noble fir, two candles · hatbox', price: 'AED 520', badge: 'new' },
+  golden: { no: '115', img: photo('golden-noel'), title: 'Golden Noel', materials: 'Noble fir, dried orange, cones · gold bowl', price: 'AED 580' },
+} satisfies Record<string, Product>;
 
-export const roses: Product[] = [
-  { img: img.red51, title: 'Bouquet of 51 Red Roses', price: 'AED 595', old: 'AED 700', badge: 'sale' },
-  { img: img.lightPink201, title: 'Bouquet of 201 Light Pink Roses', price: 'AED 1,960', soldout: true },
-  { img: img.red201, title: 'Bouquet of 101 Red Roses', price: 'AED 1,095', badge: 'best' },
-  { img: img.pink201, title: 'Bouquet of 101 Pink Roses', price: 'AED 1,395' },
-];
-
-export const redRoses: Product[] = [
-  { img: img.red51, title: 'Bouquet of 51 Red Roses', price: 'AED 595', old: 'AED 700', badge: 'sale' },
-  { img: img.red201, title: 'Bouquet of 101 Red Roses', price: 'AED 1,095', badge: 'best' },
-  { img: img.red201, title: 'Bouquet of 201 Red Roses', price: 'AED 1,960' },
-  { img: img.red51, title: 'Bouquet of 25 Red Roses', price: 'AED 750', badge: 'new' },
-  { img: img.red201, title: 'Bouquet of 333 Red Roses', price: 'AED 3,995', soldout: true },
-  { img: img.red51, title: 'Bouquet of 15 Red Roses', price: 'AED 345' },
-  { img: img.red201, title: 'Bouquet of 555 Red Roses', price: 'AED 6,590', badge: 'best' },
-  { img: img.red51, title: 'Red Roses in Jacket', price: 'AED 595' },
-];
-
-export const related: Product[] = [
-  { img: img.red201, title: 'Bouquet of 101 Red Roses', price: 'AED 1,095', badge: 'best' },
-  { img: img.pink201, title: 'Bouquet of 101 Pink Roses', price: 'AED 1,395' },
-  { img: img.white101, title: '101 White Rose Basket', price: 'AED 1,990', badge: 'new' },
-  { img: img.lightPink201, title: 'Bouquet of 201 Light Pink Roses', price: 'AED 1,960', soldout: true },
-];
+export const all: Product[] = [p.red51, p.fuchsia, p.winter, p.red101, p.lemon, p.golden];
+export const signature: Product[] = [p.fuchsia, p.red101, p.lemon, p.golden];
+export const related: Product[] = [p.red101, p.fuchsia, p.lemon, { ...p.winter, soldout: true }];
 
 export const packing = [
   { label: 'Air', price: 595 },

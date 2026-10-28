@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
-import { img, contact } from '../../data/catalog';
+import { photo, contact } from '../../data/catalog';
 const toc = [
   { id: 'areas', label: 'Delivery areas' },
   { id: 'times', label: 'Delivery times' },
@@ -38,8 +38,8 @@ const faq = [
         <p>We deliver across all of Dubai, from Bluewaters and Dubai Marina to Downtown, Deira and Dubai Hills. Every bouquet is assembled in our boutique on Bluewaters Island and travels in a climate-controlled vehicle.</p>
       </section>
       <div class="pair">
-        <img src={img.red201} alt="Red roses bouquet" width="280" height="280" loading="lazy" />
-        <img src={img.pink201} alt="Pink roses bouquet" width="280" height="280" loading="lazy" />
+        <img src={photo('red-101', '1400')} alt="Bouquet of 101 red roses" width="1400" height="933" loading="lazy" />
+        <img src={photo('fuchsia-basket-close', '1400')} alt="Fuchsia Plume Basket" width="1400" height="933" loading="lazy" />
       </div>
       <section id="times">
         <h2 class="h3">Delivery times</h2>

@@ -64,6 +64,10 @@ const mobileNav = [
 <script>
   const header = document.getElementById('site-header')!;
   let ticking = false;
+  // expose the full header height so a page can run its hero underneath it
+  const measure = () => { if (!header.classList.contains('is-scrolled')) document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px'); };
+  measure();
+  addEventListener('resize', measure);
   const onScroll = () => { header.classList.toggle('is-scrolled', window.scrollY > 40); ticking = false; };
   window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();

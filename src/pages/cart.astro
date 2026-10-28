@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
-import { img, contact, PRODUCT_URL } from '../data/catalog';
+import { photo, contact, PRODUCT_URL } from '../data/catalog';
 const items = [
-  { img: img.red51, title: 'Bouquet of 51 Red Roses', meta: ['Packing: Ribbon', 'Heart balloon (+ AED 95)', 'Card: “Happy anniversary, my love”'], unit: 740, qty: 1 },
-  { img: img.white101, title: '101 White Rose Basket', meta: ['Packing: Basket'], unit: 1990, qty: 1 },
+  { img: photo('red-51'), title: 'Bouquet of 51 Red Roses', meta: ['Packing: Ribbon', 'Heart balloon (+ AED 95)', 'Card: “Happy anniversary, my love”'], unit: 740, qty: 1 },
+  { img: photo('lemon-basket'), title: 'Lemon Garden Basket', meta: ['Woven basket'], unit: 690, qty: 1 },
 ];
 const upsell = [
   { icon: 'chocolate', label: 'Chocolates', price: 120 },
@@ -21,7 +21,7 @@ const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
         <div class="thead only-desktop"><span>Product</span><span>Quantity</span><span>Total</span></div>
         {items.map((it) => (
           <article class="item" data-unit={it.unit}>
-            <a href={PRODUCT_URL} class="thumb"><img src={it.img} alt={it.title} width="120" height="120" /></a>
+            <a href={PRODUCT_URL} class="thumb"><img src={it.img} alt={it.title} width="120" height="150" /></a>
             <div class="info">
               <a href={PRODUCT_URL} class="title">{it.title}</a>
               {it.meta.map((m) => <span class="muted">{m}</span>)}
@@ -58,9 +58,9 @@ const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
           <a href="#" class="link-caps">Change</a>
         </div>
         <dl>
-          <div><dt>Subtotal</dt><dd id="sub">AED 2,730</dd></div>
+          <div><dt>Subtotal</dt><dd id="sub">AED 1,430</dd></div>
           <div><dt>Delivery</dt><dd class="sage">Free</dd></div>
-          <div class="tot"><dt>Total</dt><dd id="tot">AED 2,730</dd></div>
+          <div class="tot"><dt>Total</dt><dd id="tot">AED 1,430</dd></div>
         </dl>
         <p class="muted vat">[VAT note to confirm]</p>
         <button class="btn btn-primary btn-xl btn-block">Checkout</button>
@@ -97,7 +97,7 @@ const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
   .thead { grid-template-columns: minmax(0, 1fr) 180px 120px; padding: 0 0 14px; border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
   .thead span:last-child { text-align: right; }
   .item { display: grid; grid-template-columns: 120px minmax(0, 1fr) 180px 120px; gap: 0 24px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
-  .thumb { border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 1; display: block; background: var(--cream); }
+  .thumb { border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 4 / 5; display: block; background: var(--wall); }
   .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .info { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
   .title { font-size: 17px; font-weight: 500; text-decoration: none; margin-bottom: 4px; }

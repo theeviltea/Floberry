@@ -2,22 +2,22 @@
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { redRoses } from '../../data/catalog';
-const first = redRoses.slice(0, 5);
-const rest = [...redRoses.slice(5), redRoses[1]];
+import { all, p } from '../../data/catalog';
+const first = all.slice(0, 5);
+const rest = [all[5], p.red101, { ...p.fuchsia, badge: '' as const }];
 const colours = [
   { name: 'Red', c: '#9E1B2A' }, { name: 'Pink', c: '#E7A1B0' }, { name: 'White', c: '#F6F1EA' },
   { name: 'Peach', c: '#F2B48C' }, { name: 'Mixed', c: 'conic-gradient(#9E1B2A 0 33%, #E7A1B0 0 66%, #F6F1EA 0)' },
 ];
 ---
-<Layout title="Red Roses — FloBerry Boutique">
+<Layout title="Signature Collection — FloBerry Boutique">
   <section class="inset banner">
     <div class="container banner-in">
-      <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><a href="#">Roses</a><span>/</span><span>Red roses</span></nav>
-      <h1 class="h1">Red Roses</h1>
-      <p class="lead">Classic red roses for every occasion — from an elegant 15-stem bouquet to a 555-rose statement basket.</p>
+      <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><span>Signature collection</span></nav>
+      <h1 class="h1">Signature Collection</h1>
+      <p class="lead">Our most loved pieces, from hand-tied rose bouquets to baskets and winter arrangements. Each one is photographed exactly as it leaves the boutique.</p>
       <div class="subcats">
-        <a class="chip is-active" href="#">All</a><a class="chip" href="#">15–51 roses</a><a class="chip" href="#">101+ roses</a><a class="chip" href="#">Baskets</a>
+        <a class="chip is-active" href="#">All</a><a class="chip" href="#">Roses</a><a class="chip" href="#">Baskets</a><a class="chip" href="#">Winter</a>
       </div>
     </div>
   </section>
@@ -97,8 +97,8 @@ const colours = [
 
   <section class="section seo">
     <div class="container seo-in">
-      <h2 class="h3">Red roses delivery in Dubai</h2>
-      <p class="muted">A bouquet of red roses is the timeless way to say “I love you”. At FloBerry we hand-pick every stem in our Bluewaters boutique and deliver across Dubai the same day — or within 40–80 minutes with Turbo Delivery. Choose the number of roses, the packing and add a balloon, chocolates or a handwritten card.</p>
+      <h2 class="h3">Flower delivery in Dubai</h2>
+      <p class="muted">At FloBerry we hand-pick every stem in our Bluewaters boutique and deliver across Dubai the same day — or within 40–80 minutes with Turbo Delivery. Choose the number of roses, the packing and add a balloon, chocolates or a handwritten card.</p>
     </div>
   </section>
 </Layout>
