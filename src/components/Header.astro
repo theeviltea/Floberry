@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { nav, contact, COLLECTION_URL } from '../data/catalog';
+import { searchIndex } from '../data/search';
 const mobileNav = [
   { label: 'Roses', href: COLLECTION_URL },
   { label: 'Signature', href: COLLECTION_URL },
@@ -24,16 +25,21 @@ const mobileNav = [
   <!-- Desktop: floating glass bar -->
   <div class="bar glass only-desktop">
     <div class="container bar-row">
-      <label class="search">
+      <form class="search" action="/search/" role="search" id="hsearch">
         <Icon name="search-01" size={18} />
-        <input type="search" placeholder="Search bouquets, roses, gifts" aria-label="Search" />
-      </label>
+        <input type="search" name="q" id="hq" placeholder="Search bouquets, roses, gifts" aria-label="Search" autocomplete="off" aria-controls="predict" />
+      </form>
       <a href="/" class="logo" aria-label="FloBerry Boutique — home"><img src="/img/brand/logo-full-coal.svg" alt="FloBerry Boutique" width="82" height="64" /></a>
       <div class="actions">
         <a class="btn btn-whatsapp btn-wa" href={contact.whatsapp}><Icon name="whatsapp" size={17} />WhatsApp</a>
-        <a class="round" href="#" aria-label="Account"><Icon name="user" size={22} /></a>
+        <a class="round" href="/account/login/" aria-label="Account"><Icon name="user" size={22} /></a>
         <a class="round cart" href="/cart/" aria-label="Cart, 2 items"><Icon name="shopping-bag-02" size={22} /><span class="count">2</span></a>
       </div>
+    </div>
+    <div class="predict" id="predict" hidden>
+      <div class="p-col"><span class="eyebrow">Suggestions</span><div id="p-sug"></div></div>
+      <div class="p-col"><span class="eyebrow">Pieces</span><div class="p-pieces" id="p-pieces"></div><a class="p-all link-caps" id="p-all" href="/search/">See all results <Icon name="arrow-right-01" size={14} /></a></div>
+      <div class="p-col p-side"><span class="eyebrow">Collections</span><div id="p-col"></div></div>
     </div>
     <nav aria-label="Main" class="mainnav">
       <ul class="container">
@@ -48,7 +54,7 @@ const mobileNav = [
   <div class="bar-m glass only-mobile">
     <div class="side">
       <button class="round" aria-label="Menu"><Icon name="menu-01" size={22} /></button>
-      <button class="round" aria-label="Search"><Icon name="search-01" size={21} /></button>
+      <a class="round" href="/search/" aria-label="Search"><Icon name="search-01" size={21} /></a>
     </div>
     <a href="/" class="logo-m" aria-label="FloBerry — home"><img src="/img/brand/wordmark-coal.svg" alt="FloBerry" width="107" height="28" /></a>
     <div class="side end">
@@ -60,6 +66,7 @@ const mobileNav = [
     {mobileNav.map((n) => <a href={n.href} class:list={{ accent: n.accent }}>{n.label}</a>)}
   </nav>
 </header>
+<script type="application/json" id="search-data" set:html={JSON.stringify(searchIndex)}></script>
 
 <script>
   const header = document.getElementById('site-header')!;
@@ -71,6 +78,36 @@ const mobileNav = [
   const onScroll = () => { header.classList.toggle('is-scrolled', window.scrollY > 40); ticking = false; };
   window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
+</script>
+
+<script>
+  // predictive search in the desktop header
+  const data = JSON.parse(document.getElementById('search-data')!.textContent || '{}');
+  const root = document.documentElement.dataset.root || '/';
+  const url = (h: string) => (root === '/' || !h.endsWith('/') ? h : h + 'index.html');
+  const q = document.getElementById('hq') as HTMLInputElement | null;
+  const box = document.getElementById('predict')!;
+  const bar = box.closest('.bar') as HTMLElement;
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const match = (hay: string, t: string) => t.split(/\s+/).every((w) => hay.includes(w.replace(/s$/, '')));
+  const render = () => {
+    const t = (q?.value || '').trim().toLowerCase();
+    if (t.length < 2) { box.hidden = true; bar.classList.remove('open'); return; }
+    const sug = data.suggestions.filter((s: string) => s.startsWith(t) || s.includes(t)).slice(0, 4);
+    const pcs = data.pieces.filter((x: any) => match((x.title + ' ' + x.materials + ' ' + x.keys).toLowerCase(), t));
+    const cols = data.collections.filter((x: any) => match((x.title + ' ' + x.keys).toLowerCase(), t));
+    const go = url(document.getElementById('hsearch')!.getAttribute('action')!);
+    document.getElementById('p-sug')!.innerHTML = (sug.length ? sug : [t]).map((s: string) => `<a class="p-s" href="${go}?q=${encodeURIComponent(s)}"><b>${esc(s.slice(0, t.length))}</b>${esc(s.slice(t.length))}</a>`).join('');
+    document.getElementById('p-pieces')!.innerHTML = pcs.length ? pcs.slice(0, 4).map((x: any) => `<a class="p-p" href="${url(x.href)}"><img src="${x.img}" alt="" width="64" height="80"><span><span class="p-no">No. ${x.no}</span><span class="p-t">${esc(x.title)}</span><b>${x.price}</b></span></a>`).join('') : '<p class="p-none">Nothing on view yet — try another word.</p>';
+    document.getElementById('p-col')!.innerHTML = (cols.length ? cols : data.collections.slice(0, 2)).map((x: any) => `<a class="p-c" href="${url(x.href)}">${esc(x.title)}</a>`).join('');
+    const all = document.getElementById('p-all') as HTMLAnchorElement;
+    all.href = `${go}?q=${encodeURIComponent(t)}`; all.firstChild!.textContent = "See all results ";
+    box.hidden = false; bar.classList.add('open');
+  };
+  q?.addEventListener('input', render);
+  q?.addEventListener('focus', render);
+  document.addEventListener('click', (e) => { if (!bar.contains(e.target as Node)) { box.hidden = true; bar.classList.remove('open'); } });
+  q?.addEventListener('keydown', (e) => { if (e.key === 'Escape') { box.hidden = true; bar.classList.remove('open'); q.blur(); } });
 </script>
 
 <style>
@@ -89,6 +126,25 @@ const mobileNav = [
   @keyframes bar-in { from { opacity: 0; transform: translateY(-14px); } }
   .bar-row { height: 84px; transition: height .5s var(--ease); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 24px; }
   .search { display: flex; align-items: center; gap: 10px; height: 42px; max-width: 300px; padding: 0 16px; background: rgba(247, 242, 236, 0.8); border-radius: var(--radius-pill); color: var(--ink-muted); }
+  .search:focus-within { background: #fff; box-shadow: inset 0 0 0 1.5px var(--coal); }
+  .predict { display: grid; grid-template-columns: 260px minmax(0, 1fr) 240px; gap: 36px; padding: 24px 40px 28px; border-top: 1px solid rgba(34, 34, 34, 0.08); max-width: var(--container); margin: 0 auto; }
+  .predict[hidden] { display: none; }
+  .open { background: rgba(255, 255, 255, 0.94) !important; }
+  .p-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .p-side { padding-left: 28px; border-left: 1px solid var(--line); }
+  .predict :global(.p-s) { display: block; padding: 8px 10px; border-radius: 10px; text-decoration: none; font-size: 16px; color: var(--ink-secondary); }
+  .predict :global(.p-s b) { color: var(--coal); font-weight: 600; }
+  .predict :global(.p-s:hover), .predict :global(.p-p:hover) { background: var(--wall); }
+  .p-pieces { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .predict :global(.p-p) { display: flex; gap: 14px; align-items: center; padding: 8px; border-radius: 16px; text-decoration: none; }
+  .predict :global(.p-p img) { width: 56px; height: 70px; object-fit: cover; border-radius: 12px; background: var(--wall); flex: none; }
+  .predict :global(.p-p > span) { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .predict :global(.p-no) { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-text); }
+  .predict :global(.p-t) { font-family: var(--font-display); font-size: 18px; line-height: 1.2; }
+  .predict :global(.p-p b) { font-size: 14px; }
+  .predict :global(.p-c) { display: block; padding: 4px 0; font-family: var(--font-display); font-size: 20px; text-decoration: none; }
+  .predict :global(.p-none) { font-size: 14px; color: var(--ink-muted); margin: 8px; }
+  .p-all { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; align-self: flex-start; margin: 6px 8px 0; }
   .search input { border: 0; outline: 0; background: transparent; font-size: 14px; color: var(--coal); width: 100%; min-width: 0; }
   .logo { display: flex; justify-content: center; }
   .logo img { height: 64px; width: auto; transition: height .5s var(--ease); }

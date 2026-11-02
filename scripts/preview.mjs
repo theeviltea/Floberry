@@ -17,8 +17,14 @@ for (const file of walk(out)) {
     let s = readFileSync(file, 'utf8');
     // page links "/x/y/" (and "/x/y/#hash") → "<up>x/y/index.html"
     s = s.replace(/href="\/((?:[a-z0-9-]+\/)*)(#[^"]*)?"/g, (_, p, h = '') => `href="${up}${p}index.html${h}"`);
+    s = s.replace(/action="\/((?:[a-z0-9-]+\/)*)"/g, (_, p) => `action="${up}${p}index.html"`);
+    // page roots handed to scripts: data-root="/" → relative root
+    s = s.replace(/data-root="\/"/g, `data-root="${up || './'}"`);
     // remaining root-relative assets: "/img/…", "/assets/…"
-    s = s.replace(/(["'(])\/(?=[a-z])/g, `$1${up}`);
+    // leave JavaScript alone (regex literals like /s$/ would be mangled); JSON data blocks are rewritten
+    s = s.split(/(<script\b[^>]*>[\s\S]*?<\/script>)/).map((part) =>
+      part.startsWith('<script') && !part.includes('application/json') ? part : part.replace(/(["'(])\/(?=[a-z])/g, `$1${up}`)
+    ).join('');
     writeFileSync(file, s);
   } else if (file.endsWith('.css')) {
     writeFileSync(file, readFileSync(file, 'utf8').replace(/url\(\//g, 'url(../'));

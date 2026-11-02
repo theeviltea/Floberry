@@ -1,0 +1,238 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { pieces, collections, pages, popular } from '../data/search';
+import { contact, COLLECTION_URL, p } from '../data/catalog';
+// The page is rendered for the demo query "roses"; the script re-runs the search for ?q= in the browser.
+const Q = 'roses';
+const kinds = ['Bouquets', 'Baskets', 'Arrangements'] as const;
+---
+<Layout title="Search — FloBerry Boutique">
+  <section class="inset band">
+    <div class="container band-in">
+      <nav class="crumbs" aria-label="Breadcrumbs"><a href="/">Home</a><span>/</span><span>Search</span></nav>
+      <form class="big" role="search" action="/search/" id="sform">
+        <Icon name="search-01" size={34} />
+        <label for="sq" class="sr-only">Search the boutique</label>
+        <input id="sq" name="q" type="search" value={Q} autocomplete="off" />
+        <button type="button" class="clear" id="sclear" aria-label="Clear search"><Icon name="cancel-01" size={18} /></button>
+        <button type="submit" class="go" aria-label="Search"><Icon name="arrow-right-01" size={22} /></button>
+      </form>
+      <div class="meta">
+        <div class="tabs" role="tablist" id="tabs">
+          <button class="chip is-active" role="tab" aria-selected="true" data-k="all">All <span data-c="all"></span></button>
+          {kinds.map((k) => <button class="chip" role="tab" aria-selected="false" data-k={k}>{k} <span data-c={k}></span></button>)}
+          <button class="chip" role="tab" aria-selected="false" data-k="Collections">Collections <span data-c="Collections"></span></button>
+          <button class="chip" role="tab" aria-selected="false" data-k="Pages">Pages <span data-c="Pages"></span></button>
+        </div>
+        <span class="count" aria-live="polite" id="scount"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container results" id="results">
+    <section class="grp" data-g="Collections">
+      <h2 class="eyebrow">Collections</h2>
+      <div class="cols">
+        {collections.map((c) => (
+          <a class="col" href={c.href} data-keys={(c.title + ' ' + c.keys).toLowerCase()}>
+            <img src={c.img} alt="" width="960" height="1200" loading="lazy" />
+            <span class="col-t"><span class="eyebrow">Collection</span><span class="col-n">{c.title}</span><span class="muted">{c.sub}</span></span>
+            <span class="arr"><Icon name="arrow-right-01" size={18} /></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="grp" data-g="pieces">
+      <div class="g-head">
+        <div><span class="eyebrow">Pieces</span><h2 class="h2" id="ptitle">Arrangements with roses</h2></div>
+        <label class="sort"><span>Sort by</span>
+          <select class="field" id="ssort"><option value="rel">Relevance</option><option value="lo">Price, low to high</option><option value="hi">Price, high to low</option></select>
+        </label>
+      </div>
+      <div class="product-grid" id="pgrid">
+        {pieces.map((x) => (
+          <div class="pc" data-kind={x.kind} data-keys={(x.title + ' ' + x.materials + ' ' + x.keys).toLowerCase()} data-price={x.price.replace(/\D/g, '')}><ProductCard {...x} /></div>
+        ))}
+        <a class="ask pat-dark" href={contact.whatsapp}>
+          <Icon name="whatsapp" size={34} />
+          <span class="ask-t">Can’t find the one?</span>
+          <span class="ask-d">Describe it to a florist on WhatsApp and we’ll compose it for you.</span>
+          <span class="btn btn-gold btn-sm">Ask a florist</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="grp two" data-g="Pages">
+      <div class="pgs">
+        <h2 class="eyebrow">Pages</h2>
+        {pages.map((x) => (
+          <a class="pg" href={x.href} data-keys={(x.title + ' ' + x.text + ' ' + x.keys).toLowerCase()}>
+            <span class="pg-t">{x.title}</span>
+            <span class="pg-d" data-text={x.text}>{x.text}</span>
+            <span class="link-caps">Read <Icon name="arrow-right-01" size={14} /></span>
+          </a>
+        ))}
+      </div>
+      <div class="pop">
+        <h2 class="eyebrow">Popular searches</h2>
+        <div class="pop-l">{popular.map((t) => <a class="pop-c" href={`/search/?q=${encodeURIComponent(t.toLowerCase())}`} data-q={t.toLowerCase()}>{t}</a>)}</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- empty state -->
+  <div class="container empty" id="empty" hidden>
+    <img src="/img/brand/pictogram-gold.svg" alt="" width="56" height="56" />
+    <h1 class="h1" id="etitle">Nothing on view</h1>
+    <p class="lead">Check the spelling or try a broader word. Our florists can also compose a bouquet with the flowers you have in mind.</p>
+    <div class="e-ctas"><a class="btn btn-whatsapp" href={contact.whatsapp}><Icon name="whatsapp" size={18} />Ask a florist on WhatsApp</a><a class="btn btn-secondary" href={COLLECTION_URL}>Browse the collection</a></div>
+    <div class="e-pop"><span class="eyebrow">Popular searches</span><div class="pop-l">{popular.map((t) => <a class="pop-c" href={`/search/?q=${encodeURIComponent(t.toLowerCase())}`} data-q={t.toLowerCase()}>{t}</a>)}</div></div>
+    <section class="e-more">
+      <div><span class="eyebrow">Now showing</span><h2 class="h2">You may like instead</h2></div>
+      <div class="product-grid"><ProductCard {...p.lemon} /><ProductCard {...p.golden} /><ProductCard {...p.fuchsia} /><ProductCard {...p.red51} /></div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const input = $<HTMLInputElement>('#sq');
+  const root = document.documentElement.dataset.root || '/';
+  let tab = 'all';
+  const words = (t: string) => t.toLowerCase().trim().split(/\s+/).filter(Boolean).map((w) => w.replace(/s$/, ''));
+  const hit = (hay: string, ws: string[]) => ws.length > 0 && ws.every((w) => hay.includes(w));
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+
+  function run() {
+    const q = input.value.trim();
+    const ws = words(q);
+    const cards = [...document.querySelectorAll<HTMLElement>('.pc')];
+    const cols = [...document.querySelectorAll<HTMLElement>('.col')];
+    const pgs = [...document.querySelectorAll<HTMLElement>('.pg')];
+    const on = (el: HTMLElement) => hit(el.dataset.keys || '', ws);
+    const counts: Record<string, number> = { Bouquets: 0, Baskets: 0, Arrangements: 0 };
+    cards.forEach((c) => { if (on(c)) counts[c.dataset.kind!]++; });
+    const nP = cards.filter(on).length, nC = cols.filter(on).length, nG = pgs.filter(on).length, total = nP + nC + nG;
+    const c = { all: total, ...counts, Collections: nC, Pages: nG } as Record<string, number>;
+    document.querySelectorAll<HTMLElement>('[data-c]').forEach((s) => (s.textContent = String(c[s.dataset.c!] ?? 0)));
+    document.querySelectorAll<HTMLElement>('#tabs .chip').forEach((b) => { b.hidden = b.dataset.k !== 'all' && !c[b.dataset.k!]; });
+    $('#scount').innerHTML = `<b>${total} result${total === 1 ? '' : 's'}</b> for “${esc(q)}”`;
+    const showP = tab === 'all' || ['Bouquets', 'Baskets', 'Arrangements'].includes(tab);
+    cards.forEach((el) => (el.hidden = !on(el) || !(tab === 'all' || tab === el.dataset.kind)));
+    cols.forEach((el) => (el.hidden = !on(el)));
+    pgs.forEach((el) => {
+      el.hidden = !on(el);
+      const d = el.querySelector<HTMLElement>('.pg-d')!; let t = esc(d.dataset.text!);
+      ws.forEach((w) => { t = t.replace(new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\w*)`, 'gi'), '<mark>$1</mark>'); });
+      d.innerHTML = t;
+    });
+    $('[data-g="Collections"]').hidden = !nC || !(tab === 'all' || tab === 'Collections');
+    $('[data-g="pieces"]').hidden = !nP || !showP;
+    $('[data-g="Pages"]').hidden = !(tab === 'all' || tab === 'Pages');
+    $('.pgs').hidden = !nG;
+    $('#ptitle').textContent = q ? `Pieces with “${q}”` : 'All pieces';
+    $('#results').hidden = total === 0;
+    $('#empty').hidden = total !== 0;
+    $('#etitle').textContent = `Nothing on view for “${q}”`;
+    document.title = (q ? `“${q}” — ` : '') + 'Search — FloBerry Boutique';
+  }
+  function sort() {
+    const g = $('#pgrid'), v = $<HTMLSelectElement>('#ssort').value;
+    const cards = [...g.querySelectorAll<HTMLElement>('.pc')];
+    if (v !== 'rel') cards.sort((a, b) => (Number(a.dataset.price) - Number(b.dataset.price)) * (v === 'lo' ? 1 : -1));
+    cards.forEach((c) => g.insertBefore(c, g.querySelector('.ask')));
+  }
+  const fromUrl = new URLSearchParams(location.search).get('q');
+  if (fromUrl !== null) input.value = fromUrl;
+  run();
+  input.addEventListener('input', run);
+  $('#sform').addEventListener('submit', (e) => { e.preventDefault(); run(); history.replaceState(null, '', `?q=${encodeURIComponent(input.value.trim())}`); });
+  $('#sclear').addEventListener('click', () => { input.value = ''; input.focus(); run(); });
+  $('#ssort').addEventListener('change', sort);
+  $('#tabs').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('.chip'); if (!b) return;
+    tab = b.dataset.k!; document.querySelectorAll('#tabs .chip').forEach((x) => { x.classList.toggle('is-active', x === b); x.setAttribute('aria-selected', String(x === b)); });
+    run();
+  });
+  document.querySelectorAll<HTMLAnchorElement>('.pop-c').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); input.value = a.dataset.q!; run(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  void root;
+</script>
+
+<style>
+  .band { background: var(--wall); margin-top: 6px; }
+  .band-in { padding-top: 48px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 24px; }
+  .crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--ink-muted); }
+  .crumbs a { color: var(--ink-muted); text-decoration: none; }
+  .big { display: flex; align-items: center; gap: 20px; border-bottom: 1.5px solid var(--coal); padding-bottom: 14px; }
+  .big input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 64px/1.05 var(--font-display); color: var(--coal); padding: 0; }
+  .big input::-webkit-search-cancel-button { display: none; }
+  .clear { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--control-border); background: rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center; padding: 0; color: var(--coal); cursor: pointer; flex: none; }
+  .go { width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--coal); color: #fff; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; flex: none; transition: transform .4s var(--ease); }
+  .go:hover { transform: translateX(3px); }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tabs .chip { background: #fff; }
+  .tabs .chip.is-active { background: var(--coal); }
+  .tabs .chip span { opacity: .6; margin-left: 4px; font-weight: 500; }
+  .count { font-size: 14px; color: var(--ink-secondary); }
+  .count :global(b) { color: var(--coal); }
+
+  .results { padding-top: 48px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 56px; }
+  .grp { display: flex; flex-direction: column; gap: 18px; }
+  .grp h2.eyebrow { margin: 0; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .col { display: flex; align-items: center; gap: 16px; padding: 12px; border-radius: 20px; border: 1px solid var(--line); text-decoration: none; transition: border-color .3s, box-shadow .4s var(--ease); }
+  .col:hover { border-color: var(--control-border); box-shadow: 0 20px 40px -30px rgba(34, 34, 34, .35); }
+  .col img { width: 64px; height: 80px; object-fit: cover; border-radius: 12px; flex: none; background: var(--wall); }
+  .col-t { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .col-n { font-family: var(--font-display); font-size: 22px; }
+  .col-t .muted { font-size: 13px; }
+  .arr { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--control-border); display: flex; align-items: center; justify-content: center; flex: none; }
+  .g-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .g-head > div { display: flex; flex-direction: column; gap: 8px; }
+  .sort { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-muted); }
+  .sort .field { border-radius: 999px; padding: 0 16px; }
+  .pc[hidden] { display: none; }
+  .ask { border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 28px; text-align: center; text-decoration: none; color: var(--light-pale-gold); min-height: 340px; }
+  .ask-t { font-family: var(--font-display); font-size: 26px; line-height: 1.15; color: #fff; }
+  .ask-d { font-size: 14px; color: var(--on-dark-muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .pgs, .pop { display: flex; flex-direction: column; gap: 14px; }
+  .pg { display: flex; flex-direction: column; gap: 8px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; text-decoration: none; }
+  .pg-t { font-family: var(--font-display); font-size: 24px; }
+  .pg-d { font-size: 15px; line-height: 1.6; color: var(--ink-secondary); }
+  .pg-d :global(mark) { background: var(--status-warm, #F3E6D8); color: inherit; border-radius: 3px; padding: 0 2px; }
+  .pg .link-caps { display: inline-flex; align-items: center; gap: 6px; }
+  .pop-l { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pop-c { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; border-radius: 999px; background: var(--cream); text-decoration: none; font-size: 14px; transition: background-color .3s; }
+  .pop-c:hover { background: var(--coal); color: #fff; }
+
+  .empty { padding-top: 72px; padding-bottom: 96px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+  .empty[hidden] { display: none; }
+  .empty .lead { max-width: 520px; color: var(--ink-secondary); }
+  .e-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .e-pop { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 24px; }
+  .e-pop .pop-l { justify-content: center; }
+  .e-more { margin-top: 40px; width: 100%; text-align: left; display: flex; flex-direction: column; gap: 28px; }
+  .e-more > div:first-child { display: flex; flex-direction: column; gap: 8px; }
+
+  @media (max-width: 760px) {
+    .band-in { padding-top: 22px; padding-bottom: 18px; gap: 16px; }
+    .big { gap: 12px; padding-bottom: 10px; }
+    .big input { font-size: 36px; }
+    .big > :global(svg) { width: 24px; height: 24px; }
+    .go { display: none; }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; margin: 0 -20px; padding: 0 20px; scrollbar-width: none; }
+    .tabs .chip { flex: none; }
+    .results { padding-top: 28px; gap: 36px; }
+    .cols { grid-template-columns: 1fr; }
+    .col-n { font-size: 19px; }
+    .ask { grid-column: 1 / -1; min-height: 0; }
+    .two { grid-template-columns: 1fr; }
+    .empty { padding-top: 40px; }
+    .e-ctas .btn { width: 100%; }
+  }
+</style>

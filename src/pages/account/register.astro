@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import AuthShell from '../../components/AuthShell.astro';
+import '../../styles/forms.css';
+const perks = [
+  ['package', 'Follow every order', 'From the florist’s table to the door.'],
+  ['location-01', 'Saved recipients', 'Addresses of the people you send flowers to.'],
+  ['calendar-03', 'Date reminders', 'We’ll remind you before birthdays and anniversaries.'],
+];
+---
+<Layout title="Create account — FloBerry Boutique">
+  <AuthShell shot="fuchsia-basket-close" word="Hello" no="031" title="Fuchsia Plume Basket" active="register">
+    <form class="af" id="reg" action="/account/" novalidate>
+      <div class="af-head"><span class="eyebrow">Join the boutique</span><h1>Create an account</h1></div>
+      <ul class="perks">{perks.map(([i, t, d]) => <li><span class="pi"><Icon name={i} size={18} /></span><span><b>{t}</b><span>{d}</span></span></li>)}</ul>
+      <div class="row2">
+        <div class="fld"><label for="fn">First name</label><div class="box"><input id="fn" autocomplete="given-name" /></div></div>
+        <div class="fld"><label for="ln">Last name</label><div class="box"><input id="ln" autocomplete="family-name" /></div></div>
+      </div>
+      <div class="fld"><label for="remail">Email</label><div class="box"><input id="remail" type="email" autocomplete="email" placeholder="you@example.com" /></div></div>
+      <div class="fld"><label for="phone">Phone</label><div class="box"><span class="pre">+971</span><input id="phone" type="tel" autocomplete="tel-national" placeholder="50 123 4567" /></div><span class="hint">For delivery updates on WhatsApp</span></div>
+      <div class="fld"><label for="rpass">Password</label><div class="box"><input id="rpass" type="password" autocomplete="new-password" placeholder="Create a password" /><button type="button" class="show" data-show="rpass">Show</button></div><span class="hint">At least 8 characters</span></div>
+      <label class="chk" for="news"><input id="news" type="checkbox" />Send me new collections and offers by email</label>
+      <label class="chk" for="wa"><input id="wa" type="checkbox" checked />Send order updates to my WhatsApp</label>
+      <button class="btn btn-primary btn-xl btn-block" type="submit">Create account</button>
+      <p class="note">By creating an account you agree to our <a href="/pages/delivery/">Terms &amp; Conditions</a> and <a href="/pages/delivery/">Privacy Policy</a>.</p>
+      <p class="alt">Already have an account? <a href="/account/login/">Sign in</a></p>
+    </form>
+  </AuthShell>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-show]').forEach((b) => b.addEventListener('click', () => {
+    const i = document.getElementById(b.dataset.show!) as HTMLInputElement; const show = i.type === 'password';
+    i.type = show ? 'text' : 'password'; b.textContent = show ? 'Hide' : 'Show';
+  }));
+  const f = document.getElementById('reg') as HTMLFormElement;
+  f.addEventListener('submit', (e) => { e.preventDefault(); location.href = f.getAttribute('action')!; });
+</script>
