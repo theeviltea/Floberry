@@ -99,9 +99,24 @@ h1, h2, h3, h4, p { margin: 0; }
   box-shadow: var(--shadow-glass-dark);
   color: var(--on-dark);
 }
-.pat-dark { background-color: var(--coal); background-image: url(/img/brand/pattern-gold-on-dark.svg); background-size: 120px 120px; }
-.pat-light { background-color: var(--cream); background-image: url(/img/brand/pattern-gold-on-light.svg); background-size: 120px 120px; }
-@media (max-width: 760px) { .pat-dark, .pat-light { background-size: 96px 96px; } }
+/* "Gallery light": dark and light feature surfaces get a soft warm spotlight from the top corner,
+   a faint sage bounce from the opposite corner and a fine paper grain — no repeating logo pattern. */
+.pat-dark {
+  background-color: var(--coal);
+  background-image:
+    radial-gradient(90% 120% at 100% 0%, rgba(227, 207, 189, 0.2) 0%, rgba(227, 207, 189, 0.06) 38%, transparent 66%),
+    radial-gradient(70% 90% at 0% 100%, rgba(106, 136, 121, 0.16) 0%, transparent 60%),
+    url(/img/brand/grain.png);
+  background-size: auto, auto, 128px 128px;
+}
+.pat-light {
+  background-color: var(--wall);
+  background-image:
+    radial-gradient(90% 120% at 85% 0%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 40%, transparent 70%),
+    radial-gradient(70% 90% at 0% 100%, rgba(220, 220, 224, 0.9) 0%, transparent 60%),
+    url(/img/brand/grain.png);
+  background-size: auto, auto, 128px 128px;
+}
 .inset { margin: 0 var(--inset); border-radius: var(--radius-2xl); overflow: hidden; }
 @media (max-width: 760px) { .inset { border-radius: var(--radius-xl); } }
 

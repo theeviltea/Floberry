@@ -520,8 +520,7 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
 
   /* ================= Finale ================= */
   .finale { background: var(--coal-deep); color: var(--on-dark); margin-top: 16px; position: relative; }
-  .finale::before { content: ''; position: absolute; inset: 0; background: url(/img/brand/pattern-gold-on-dark.svg) 0 0 / 120px 120px; opacity: .5; animation: drift 60s linear infinite; }
-  @keyframes drift { to { background-position: 120px 120px; } }
+  .finale::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(80% 110% at 50% 0%, rgba(227, 207, 189, 0.18) 0%, rgba(227, 207, 189, 0.05) 40%, transparent 70%), url(/img/brand/grain.png); background-size: auto, 128px 128px; }
   .fin-in { position: relative; padding-top: 120px; padding-bottom: 72px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
   .fin-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 96px; line-height: .98; }
   .fin-title em { color: var(--light-pale-gold); }
