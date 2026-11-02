@@ -84,12 +84,12 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   <div class="ticker" aria-label="Why FloBerry">
     <div class="ticker-track" id="ticker">
       {[0, 1, 2].map(() => ticker.map((t) => (
-        <span class="tk"><span>{t}</span><img src="/img/brand/pictogram-gold.svg" alt="" width="34" height="34" /></span>
+        <span class="tk"><span>{t}</span><img src="/img/brand/pictogram-gold.svg" alt="" width="20" height="20" /></span>
       )))}
     </div>
   </div>
 
-  <!-- 3. Hall: pinned horizontal gallery -->
+  <!-- 3. Hall: product slider with arrows -->
   <section class="hall" id="hall">
     <div class="hall-pin">
       <div class="container hall-head">
@@ -97,7 +97,11 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
           <span class="eyebrow">Now showing · Winter 2026</span>
           <h2 class="hall-title">The collection, <em>on view</em></h2>
         </div>
-        <p class="muted">Each arrangement is photographed exactly as it leaves the boutique. Pick a piece, choose its packing, add a card.</p>
+        <div class="hall-ctrl">
+          <span class="hall-count" aria-live="polite"><b id="hall-cur">01</b> / {String(all.length).padStart(2, '0')}</span>
+          <button class="hall-arrow" id="hall-prev" aria-label="Previous pieces" disabled><Icon name="arrow-left-01" size={20} /></button>
+          <button class="hall-arrow" id="hall-next" aria-label="Next pieces"><Icon name="arrow-right-01" size={20} /></button>
+        </div>
       </div>
       <div class="hall-track" id="hall-track">
         {all.map((p) => (
@@ -115,7 +119,7 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
           <span class="ex-more-in"><img src="/img/brand/pictogram-gold.svg" alt="" width="56" height="56" /><span>View the full collection</span><Icon name="arrow-right-01" size={22} /></span>
         </a>
       </div>
-      <div class="container hall-foot"><span class="hall-bar"><span id="hall-bar"></span></span><span class="muted hint only-desktop">Keep scrolling to walk the room</span></div>
+      <div class="container hall-foot"><span class="hall-bar"><span id="hall-bar"></span></span><p class="muted hint">Each arrangement is photographed exactly as it leaves the boutique.</p></div>
     </div>
   </section>
 
@@ -137,7 +141,7 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
       <ul class="occ" id="occ">
         {occasions.map((o) => (
           <li data-reveal>
-            <a href={COLLECTION_URL} data-peek={photo(o.shot)}>
+            <a href={COLLECTION_URL}>
               <span class="occ-t">{o.t}</span>
               <span class="occ-d">{o.d}</span>
               <img class="occ-thumb only-mobile" src={photo(o.shot)} alt="" width="960" height="1200" loading="lazy" />
@@ -147,7 +151,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
         ))}
       </ul>
     </div>
-    <div class="peek" id="peek" aria-hidden="true"><img alt="" width="960" height="1200" /></div>
   </section>
 
   <!-- 6. Turbo -->
@@ -279,17 +282,28 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   let tx = 0, dir = 1, boost = 0, lastY = scrollY;
   const loopW = () => tk.scrollWidth / 3;
 
-  /* ---------- Hall: pinned horizontal scroll (desktop) ---------- */
-  const hall = document.getElementById('hall')!;
+  /* ---------- Hall: classic slider (native scroll + snap, arrows, counter, progress) ---------- */
   const track = document.getElementById('hall-track')!;
   const bar = document.getElementById('hall-bar')!;
-  let hallMax = 0;
-  const sizeHall = () => {
-    if (mobile.matches || reduce) { hall.style.height = ''; track.style.transform = ''; hallMax = 0; return; }
-    hallMax = Math.max(0, track.scrollWidth - innerWidth + 48);
-    hall.style.height = `${innerHeight + hallMax}px`;
+  const prev = document.getElementById('hall-prev') as HTMLButtonElement;
+  const next = document.getElementById('hall-next') as HTMLButtonElement;
+  const hallCur = document.getElementById('hall-cur')!;
+  const items = [...track.querySelectorAll<HTMLElement>('.ex:not(.ex-more)')];
+  const step = () => { const a = items[0], b = items[1]; return a && b ? b.offsetLeft - a.offsetLeft : track.clientWidth * 0.8; };
+  const syncHall = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const k = max > 0 ? track.scrollLeft / max : 0;
+    bar.style.width = `${Math.max(0.12, k) * 100}%`;
+    prev.disabled = track.scrollLeft <= 4;
+    next.disabled = track.scrollLeft >= max - 4;
+    const i = Math.min(items.length - 1, Math.round(track.scrollLeft / step()));
+    hallCur.textContent = String(i + 1).padStart(2, '0');
   };
-  track.addEventListener('scroll', () => { if (hallMax === 0) bar.style.width = `${(track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)) * 100}%`; }, { passive: true });
+  prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: reduce ? 'auto' : 'smooth' }));
+  next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: reduce ? 'auto' : 'smooth' }));
+  track.addEventListener('scroll', () => requestAnimationFrame(syncHall), { passive: true });
+  addEventListener('resize', syncHall);
+  syncHall();
 
   /* ---------- Statement: words light up as you read ---------- */
   const say = document.getElementById('say')!;
@@ -309,16 +323,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   }), { threshold: 0.35 });
   io.observe(turbo);
 
-  /* ---------- Occasion index: image peeks after the cursor ---------- */
-  const peek = document.getElementById('peek')!;
-  const peekImg = peek.querySelector('img')!;
-  let px = 0, py = 0, tx2 = 0, ty2 = 0, pv = 0;
-  document.querySelectorAll<HTMLAnchorElement>('#occ a').forEach((a) => {
-    a.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse') return; peekImg.src = a.dataset.peek!; peek.classList.add('on'); });
-    a.addEventListener('pointerleave', () => peek.classList.remove('on'));
-  });
-  document.getElementById('occ')!.addEventListener('pointermove', (e) => { tx2 = e.clientX; ty2 = e.clientY; });
-
   /* ---------- one rAF loop for everything scroll-driven ---------- */
   function frame() {
     const y = scrollY, vh = innerHeight;
@@ -330,27 +334,13 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
     if (v !== 0) dir = v > 0 ? 1 : -1;
     boost = boost * 0.92 + Math.min(Math.abs(v), 60) * 0.08;
     if (!reduce) { tx -= (0.6 + boost * 0.9) * dir; const w = loopW(); if (tx < -w) tx += w; if (tx > 0) tx -= w; tk.style.transform = `translate3d(${tx}px,0,0)`; }
-    // hall
-    if (hallMax > 0) {
-      const r = hall.getBoundingClientRect();
-      const k = clamp(-r.top / hallMax);
-      track.style.transform = `translate3d(${-k * hallMax}px,0,0)`;
-      bar.style.width = `${k * 100}%`;
-    }
     // statement
     const sr = say.getBoundingClientRect();
     const sk = clamp((vh * 0.85 - sr.top) / (sr.height + vh * 0.45));
     const lit = Math.round(sk * words.length);
     words.forEach((w, i) => w.classList.toggle('lit', i < lit || reduce));
-    // peek
-    px += (tx2 - px) * 0.14; py += (ty2 - py) * 0.14; pv = pv * 0.85 + (tx2 - px) * 0.015;
-    peek.style.transform = `translate3d(${px}px,${py}px,0) translate(-50%,-50%) rotate(${clamp(pv, -8, 8)}deg)`;
     requestAnimationFrame(frame);
   }
-  sizeHall();
-  addEventListener('resize', sizeHall);
-  addEventListener('load', sizeHall);
-  mobile.addEventListener('change', sizeHall);
   requestAnimationFrame(frame);
 </script>
 
@@ -427,22 +417,32 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   @keyframes cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
   /* ================= Ticker ================= */
-  .ticker { overflow: hidden; background: var(--coal); color: var(--light-pale-gold); padding: 26px 0; }
+  .ticker { overflow: hidden; background: var(--coal); color: var(--light-pale-gold); padding: 11px 0; }
   .ticker-track { display: flex; width: max-content; will-change: transform; }
-  .tk { display: inline-flex; align-items: center; gap: 36px; padding-right: 36px; font-family: var(--font-display); font-size: 46px; line-height: 1; white-space: nowrap; }
+  .tk { display: inline-flex; align-items: center; gap: 24px; padding-right: 24px; font-family: var(--font-display); font-size: 22px; line-height: 1; white-space: nowrap; }
   .tk:nth-child(even) span { font-style: italic; color: var(--on-dark); }
 
   /* ================= Hall ================= */
   .hall { position: relative; background: linear-gradient(180deg, var(--wall) 0%, #f3f3f5 45%, var(--wall-deep) 100%); }
-  .hall-pin { position: sticky; top: 0; height: 100vh; min-height: 680px; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding-top: calc(var(--sticky-top) - 8px); overflow: hidden; }
+  .hall-pin { display: flex; flex-direction: column; gap: 36px; padding: 96px 0 72px; }
   .hall-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
-  .hall-head p { max-width: 380px; font-size: 15px; line-height: 1.6; margin: 0; }
+  .hall-ctrl { display: flex; align-items: center; gap: 10px; flex: none; }
+  .hall-count { margin-right: 10px; font-size: 13px; letter-spacing: 0.14em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .hall-count b { color: var(--coal); font-weight: 600; }
+  .hall-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(34, 34, 34, 0.2); background: rgba(255, 255, 255, 0.55); color: var(--coal); display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background-color .3s, color .3s, border-color .3s, opacity .3s, transform .4s var(--ease); }
+@media (hover: hover) {
+  .hall-arrow:hover:not(:disabled) { background: var(--coal); border-color: var(--coal); color: #fff; }
+  #hall-prev:hover:not(:disabled) { transform: translateX(-3px); }
+  #hall-next:hover:not(:disabled) { transform: translateX(3px); }
+  }
+  .hall-arrow:disabled { opacity: .35; cursor: default; }
+  .hall-arrow:focus-visible { outline: 2px solid var(--coal); outline-offset: 3px; }
   .hall-title { margin: 10px 0 0; font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1; }
   .hall-title em { color: var(--gold-text); }
-  .hall-track { display: flex; gap: 40px; padding: 0 max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); will-change: transform; }
-  .ex { flex: none; width: min(33vh, 340px); display: flex; flex-direction: column; gap: 16px; }
+  .hall-track { --pad: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); display: flex; gap: 32px; padding: 4px var(--pad) 12px; scroll-padding-inline: var(--pad); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .hall-track::-webkit-scrollbar { display: none; }
+  .ex { flex: none; width: 300px; display: flex; flex-direction: column; gap: 16px; scroll-snap-align: start; }
   .ex-img { display: block; aspect-ratio: 4 / 5; max-width: 100%; border-radius: var(--radius-lg); overflow: hidden; background: var(--wall); box-shadow: 0 30px 60px -36px rgba(34, 34, 34, 0.35); }
-  .ex:nth-child(even) { margin-top: 48px; }
   .ex-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
   .ex:hover .ex-img img { transform: scale(1.05); }
   .ex-label { display: flex; flex-direction: column; gap: 4px; padding-left: 14px; border-left: 1px solid rgba(34, 34, 34, 0.25); }
@@ -458,8 +458,9 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   .ex-more-in { aspect-ratio: 4 / 5; max-width: 100%; border-radius: var(--radius-lg); border: 1px dashed rgba(34, 34, 34, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; font-family: var(--font-display); font-size: 26px; padding: 24px; transition: background-color .4s; }
   .ex-more:hover .ex-more-in { background: rgba(255, 255, 255, 0.6); }
   .hall-foot { display: flex; align-items: center; gap: 20px; }
-  .hall-bar { flex: 1; max-width: 320px; height: 2px; background: rgba(34, 34, 34, 0.12); border-radius: 1px; overflow: hidden; }
-  .hall-bar span { display: block; height: 100%; width: 0; background: var(--coal); }
+  .hall-bar { flex: 1; max-width: 320px; height: 2px; transition: none; background: rgba(34, 34, 34, 0.12); border-radius: 1px; overflow: hidden; }
+  .hall-bar span { display: block; height: 100%; width: 12%; background: var(--coal); transition: width .3s var(--ease); }
+  .hall-foot .hint { margin: 0; }
   .hint { font-size: 13px; }
 
   /* ================= Statement ================= */
@@ -480,9 +481,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   .occ-arr { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--control-border); display: flex; align-items: center; justify-content: center; transition: background-color .3s, color .3s, transform .5s var(--ease); }
   .occ a:hover .occ-t { transform: translateX(24px); color: var(--gold-text); }
   .occ a:hover .occ-arr { background: var(--coal); color: #fff; transform: rotate(-45deg); }
-  .peek { position: fixed; left: 0; top: 0; z-index: 30; width: 240px; aspect-ratio: 4 / 5; border-radius: var(--radius-lg); overflow: hidden; pointer-events: none; opacity: 0; scale: .8; transition: opacity .3s ease, scale .4s var(--ease); box-shadow: 0 30px 60px -20px rgba(34, 34, 34, 0.4); }
-  .peek.on { opacity: 1; scale: 1; }
-  .peek img { width: 100%; height: 100%; object-fit: cover; }
 
   /* ================= Turbo ================= */
   .turbo { color: var(--on-dark); }
@@ -568,16 +566,17 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
     .segs { flex: 1; }
     .seg { flex: 1; width: auto; }
     .scroll-cue { display: none; }
-    .ticker { padding: 18px 0; }
-    .tk { font-size: 28px; gap: 22px; padding-right: 22px; }
-    .tk img { width: 24px; height: 24px; }
-    .hall-pin { position: static; height: auto; min-height: 0; padding: 56px 0 40px; gap: 24px; }
-    .hall-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .ticker { padding: 9px 0; }
+    .tk { font-size: 18px; gap: 16px; padding-right: 16px; }
+    .tk img { width: 16px; height: 16px; }
+    .hall-pin { padding: 56px 0 40px; gap: 24px; }
+    .hall-arrow { width: 44px; height: 44px; }
+    .hall-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .hall-ctrl { align-self: stretch; }
+    .hall-count { margin-right: auto; }
     .hall-title { font-size: 40px; }
-    .hall-track { overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; padding: 0 20px 8px; scrollbar-width: none; }
-    .hall-track::-webkit-scrollbar { display: none; }
-    .ex { width: 72vw; scroll-snap-align: center; }
-    .ex:nth-child(even) { margin-top: 0; }
+    .hall-track { gap: 16px; }
+    .ex { width: 72vw; }
     .hint { display: none; }
     .statement { padding: 88px 0; }
     .say { font-size: 30px; line-height: 1.18; }
@@ -585,7 +584,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
     .occ-t { font-size: 28px; }
     .occ-thumb { display: block !important; width: 56px; height: 70px; object-fit: cover; border-radius: 10px; }
     .occ-arr { width: 36px; height: 36px; }
-    .peek { display: none; }
     .turbo-in { padding-top: 64px; padding-bottom: 64px; gap: 36px; }
     .t-num { font-size: 84px; }
     .t-num .unit { font-size: 15px; margin-left: 6px; }
