@@ -127,7 +127,7 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   <section class="statement">
     <div class="container st-in">
       <img src="/img/brand/pictogram-gold.svg" alt="" width="56" height="56" />
-      <p class="say" id="say">{statement.split(' ').map((w) => <span class="w">{w} </span>)}</p>
+      <p class="say" id="say">{statement.split(' ').map((w, i) => <span class="w" style={`--i:${i}`}>{w} </span>)}</p>
       <a class="link-caps" href="/pages/delivery/">How delivery works <Icon name="arrow-right-01" size={14} /></a>
     </div>
   </section>
@@ -307,7 +307,8 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
 
   /* ---------- Statement: words light up as you read ---------- */
   const say = document.getElementById('say')!;
-  const words = [...say.querySelectorAll<HTMLElement>('.w')];
+  const sayIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { say.classList.add('on'); sayIO.disconnect(); } }), { threshold: 0.35 });
+  sayIO.observe(say);
 
   /* ---------- Turbo: count-up + route draw ---------- */
   const turbo = document.getElementById('turbo')!;
@@ -334,11 +335,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
     if (v !== 0) dir = v > 0 ? 1 : -1;
     boost = boost * 0.92 + Math.min(Math.abs(v), 60) * 0.08;
     if (!reduce) { tx -= (0.6 + boost * 0.9) * dir; const w = loopW(); if (tx < -w) tx += w; if (tx > 0) tx -= w; tk.style.transform = `translate3d(${tx}px,0,0)`; }
-    // statement
-    const sr = say.getBoundingClientRect();
-    const sk = clamp((vh * 0.85 - sr.top) / (sr.height + vh * 0.45));
-    const lit = Math.round(sk * words.length);
-    words.forEach((w, i) => w.classList.toggle('lit', i < lit || reduce));
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -467,8 +463,10 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   .statement { padding: 160px 0; }
   .st-in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 36px; }
   .say { margin: 0; max-width: 1080px; font-family: var(--font-display); font-size: 58px; line-height: 1.12; text-wrap: balance; }
-  .w { color: rgba(34, 34, 34, 0.14); transition: color .5s ease; }
-  .w.lit { color: var(--coal); }
+  /* words light up one by one when the statement comes into view; without JS they are simply coal */
+  .w { color: var(--coal); }
+  :global(.reveal-on) .w { color: rgba(34, 34, 34, 0.22); transition: color .6s ease; transition-delay: calc(var(--i) * 45ms); }
+  :global(.reveal-on) .say.on .w { color: var(--coal); }
   .statement .link-caps { display: inline-flex; gap: 8px; align-items: center; text-decoration: none; }
 
   /* ================= Occasions ================= */
