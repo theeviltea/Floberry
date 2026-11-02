@@ -112,6 +112,7 @@ const photos = [photo('red-51'), photo('red-51', '1400'), photo('red-101')];
 </Layout>
 
 <script>
+  import { petals } from '../../scripts/petals';
   const fmt = (n: number) => 'AED ' + n.toLocaleString('en-US');
   const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
   let base = 595, qty = 1;
@@ -120,6 +121,7 @@ const photos = [photo('red-51'), photo('red-51', '1400'), photo('red-101')];
     document.querySelectorAll('.total').forEach((t) => (t.textContent = fmt((base + extra) * qty)));
   };
   document.querySelectorAll<HTMLElement>('.pk').forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') !== 'true') petals(b, 6);
     document.querySelectorAll('.pk').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     base = Number(b.dataset.price);
     $('#price').textContent = fmt(base);
@@ -128,8 +130,10 @@ const photos = [photo('red-51'), photo('red-51', '1400'), photo('red-101')];
     update();
   }));
   document.querySelectorAll('.ad').forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') !== 'true') petals(b);
     b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); update();
   }));
+  document.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-pressed') !== 'true') petals(b, 5); }));
   document.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () =>
     document.querySelectorAll('.day').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))));
   document.querySelectorAll<HTMLElement>('[data-q]').forEach((b) => b.addEventListener('click', () => {
@@ -137,6 +141,9 @@ const photos = [photo('red-51'), photo('red-51', '1400'), photo('red-101')];
   }));
   const msg = $<HTMLTextAreaElement>('#msg');
   msg.addEventListener('input', () => ($('#msg-n').textContent = String(msg.value.length)));
+  const turbo = document.getElementById('turbo') as HTMLInputElement;
+  turbo.addEventListener('change', () => { if (turbo.checked) petals(turbo.closest('.turbo')!, 6); });
+  document.querySelectorAll('.atc, .sticky-atc .btn').forEach((b) => b.addEventListener('click', () => petals(b, 12)));
   document.querySelectorAll<HTMLElement>('.thumb[data-src]').forEach((t) => t.addEventListener('click', () => {
     document.querySelectorAll('.thumb').forEach((x) => x.classList.toggle('on', x === t));
     $<HTMLImageElement>('#main-img').src = t.dataset.src!;
