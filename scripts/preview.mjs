@@ -23,7 +23,9 @@ for (const file of walk(out)) {
     // remaining root-relative assets: "/img/…", "/assets/…"
     // leave JavaScript alone (regex literals like /s$/ would be mangled); JSON data blocks are rewritten
     s = s.split(/(<script\b[^>]*>[\s\S]*?<\/script>)/).map((part) =>
-      part.startsWith('<script') && !part.includes('application/json') ? part : part.replace(/(["'(])\/(?=[a-z])/g, `$1${up}`)
+      part.startsWith('<script') && !part.includes('application/json')
+        ? part.replace(/^(<script\b[^>]*\bsrc=")\/(?=[a-z])/, `$1${up}`) // external bundle: fix only its src
+        : part.replace(/(["'(])\/(?=[a-z])/g, `$1${up}`)
     ).join('');
     writeFileSync(file, s);
   } else if (file.endsWith('.css')) {
