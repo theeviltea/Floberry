@@ -127,7 +127,7 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   <section class="statement">
     <div class="container st-in">
       <img src="/img/brand/pictogram-gold.svg" alt="" width="56" height="56" />
-      <p class="say" id="say">{statement.split(' ').map((w, i) => <span class="w" style={`--i:${i}`}>{w} </span>)}</p>
+      <p class="say" id="say" data-light>{statement.split(' ').map((w, i) => <span class="w" style={`--i:${i}`}>{w} </span>)}</p>
       <a class="link-caps" href="/pages/delivery/">How delivery works <Icon name="arrow-right-01" size={14} /></a>
     </div>
   </section>
@@ -305,10 +305,6 @@ const statement = 'Every bouquet is hand-tied in our boutique on Bluewaters Isla
   addEventListener('resize', syncHall);
   syncHall();
 
-  /* ---------- Statement: words light up as you read ---------- */
-  const say = document.getElementById('say')!;
-  const sayIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { say.classList.add('on'); sayIO.disconnect(); } }), { threshold: 0.35 });
-  sayIO.observe(say);
 
   /* ---------- Turbo: count-up + route draw ---------- */
   const turbo = document.getElementById('turbo')!;

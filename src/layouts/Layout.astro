@@ -45,6 +45,11 @@ const { title, description = 'Handcrafted flower bouquets from FloBerry Boutique
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
         document.documentElement.classList.add('reveal-on');
         targets.forEach(function (el) { io.observe(el); });
+        // text that "fills" with ink once it enters the reading zone
+        var lit = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); lit.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+        document.querySelectorAll('[data-light]').forEach(function (el) { lit.observe(el); });
       })();
     </script>
   </body>
